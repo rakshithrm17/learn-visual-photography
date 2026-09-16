@@ -2,163 +2,135 @@
 // LEARN VISUAL PHOTOGRAPHY
 // scene-renderer.js — Shared canvas scene drawing
 //
-// All simulators use these scene drawing functions.
-// The scene shows: sky, mountains, trees, ground,
-// and a person in the foreground.
-//
-// Each simulator applies its own effect on top:
-// - Aperture sim: blurs the background layer
-// - Shutter sim: adds motion blur streaks
-// - ISO sim: adds grain noise overlay
+// Now uses photorealistic image assets.
 // ================================================
 
-// ---- Scene Color Palettes per scene type ----
-const SCENE_PALETTES = {
-  portrait: {
-    skyTop:      '#87CEEB',
-    skyBottom:   '#B0D4E8',
-    ground:      '#7CB87A',
-    mountain:    '#8FA8C8',
-    treeTrunk:   '#6B4226',
-    treeLeaf:    '#4A7C59',
-    subjectShirt:'#E8A87C',
-    subjectSkin: '#D4956A',
-    subjectHair: '#4A2C17'
-  },
-  landscape: {
-    skyTop:      '#5B9BD5',
-    skyBottom:   '#A8CBE8',
-    ground:      '#5A8A52',
-    mountain:    '#6B8CAE',
-    treeTrunk:   '#5A3820',
-    treeLeaf:    '#3D6B4A',
-    subjectShirt:'#CC8844',
-    subjectSkin: '#C4845A',
-    subjectHair: '#3A1F10'
-  },
-  sports: {
-    skyTop:      '#7EC8E3',
-    skyBottom:   '#C0D8E8',
-    ground:      '#8BC34A',
-    mountain:    '#90A4AE',
-    treeTrunk:   '#795548',
-    treeLeaf:    '#558B2F',
-    subjectShirt:'#E53935',
-    subjectSkin: '#D4956A',
-    subjectHair: '#212121'
-  },
-  lowlight: {
-    skyTop:      '#1A237E',
-    skyBottom:   '#283593',
-    ground:      '#2E4A2E',
-    mountain:    '#37474F',
-    treeTrunk:   '#3E2723',
-    treeLeaf:    '#2E7D32',
-    subjectShirt:'#37474F',
-    subjectSkin: '#8D6E63',
-    subjectHair: '#212121'
-  }
+// ---- Image Asset Manager ----
+const SceneAssets = {
+  portrait: { bgSrc: '../assets/images/bg_portrait.jpg', subSrc: '../assets/images/subject_portrait.jpg', bgImg: null, subImg: null },
+  landscape:{ bgSrc: '../assets/images/bg_portrait.jpg', subSrc: '../assets/images/subject_portrait.jpg', bgImg: null, subImg: null }, // reuse portrait for now or standard
+  sports:   { bgSrc: '../assets/images/bg_sports.jpg', subSrc: '../assets/images/subject_sports.jpg', bgImg: null, subImg: null },
+  lowlight: { bgSrc: '../assets/images/bg_lowlight.jpg', subSrc: '../assets/images/subject_lowlight.jpg', bgImg: null, subImg: null }
 };
 
-// ---- Draw the background layer (sky + mountains + trees) ----
+let assetsLoaded = false;
+const callbacks = [];
+
+// Load all images and process chromakey for subjects
+function preloadSceneAssets(onComplete) {
+  if (assetsLoaded) return onComplete();
+  callbacks.push(onComplete);
+  if (callbacks.length > 1) return; // already loading
+
+  let toLoad = 0;
+  
+  // Helper to load image
+  const loadImg = (src, onLoad) => {
+    toLoad++;
+    const img = new Image();
+    img.onload = () => { onLoad(img); checkDone(); };
+    img.onerror = () => { console.error('Failed to load', src); checkDone(); };
+    img.src = src;
+  };
+
+  const checkDone = () => {
+    toLoad--;
+    if (toLoad === 0) {
+      assetsLoaded = true;
+      callbacks.forEach(cb => cb());
+    }
+  };
+
+  // Helper to chromakey white background
+  const processChromakey = (img) => {
+    const c = document.createElement('canvas');
+    c.width = img.width; c.height = img.height;
+    const ctx = c.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    const idata = ctx.getImageData(0,0,c.width,c.height);
+    const d = idata.data;
+    // White background removal (threshold)
+    for (let i = 0; i < d.length; i += 4) {
+      if (d[i] > 230 && d[i+1] > 230 && d[i+2] > 230) {
+        // Soften edges slightly based on brightness
+        const brightness = (d[i] + d[i+1] + d[i+2]) / 3;
+        const alpha = Math.max(0, 255 - (brightness - 230) * 10);
+        d[i+3] = alpha; 
+      }
+    }
+    ctx.putImageData(idata, 0, 0);
+    return c; // return canvas to draw directly
+  };
+
+  Object.values(SceneAssets).forEach(scene => {
+    loadImg(scene.bgSrc, img => scene.bgImg = img);
+    loadImg(scene.subSrc, img => {
+      // Create a transparent version of the subject
+      scene.subImg = processChromakey(img);
+    });
+  });
+}
+
+// Call this immediately to start loading
+preloadSceneAssets(() => {
+  // Dispatch event when ready so simulators can re-render
+  window.dispatchEvent(new Event('scene-assets-loaded'));
+});
+
+
+// ---- Draw the background layer ----
 // This layer gets blurred based on aperture.
-function drawBackground(ctx, width, height, palette) {
-  // Sky gradient
-  const skyGrad = ctx.createLinearGradient(0, 0, 0, height * 0.65);
-  skyGrad.addColorStop(0, palette.skyTop);
-  skyGrad.addColorStop(1, palette.skyBottom);
-  ctx.fillStyle = skyGrad;
-  ctx.fillRect(0, 0, width, height * 0.65);
-
-  // Ground
-  ctx.fillStyle = palette.ground;
-  ctx.fillRect(0, height * 0.65, width, height * 0.35);
-
-  // Distant mountains
-  drawMountain(ctx, width * 0.1, height * 0.55, width * 0.35, height * 0.3, palette.mountain);
-  drawMountain(ctx, width * 0.45, height * 0.50, width * 0.30, height * 0.28, palette.mountain);
-  drawMountain(ctx, width * 0.7, height * 0.58, width * 0.40, height * 0.25, palette.mountain);
-
-  // Background trees (left and right — far from subject)
-  drawTree(ctx, width * 0.08, height * 0.65, 14, 36, palette);
-  drawTree(ctx, width * 0.15, height * 0.65, 12, 32, palette);
-  drawTree(ctx, width * 0.82, height * 0.65, 13, 34, palette);
-  drawTree(ctx, width * 0.90, height * 0.65, 11, 30, palette);
+function drawBackground(ctx, width, height, sceneName) {
+  // Fallback to portrait if scene not found
+  const scene = SceneAssets[sceneName] || SceneAssets.portrait;
+  
+  if (scene.bgImg) {
+    // Fill canvas, preserving aspect ratio (cover)
+    const imgRatio = scene.bgImg.width / scene.bgImg.height;
+    const canvasRatio = width / height;
+    let drawW = width, drawH = height, x = 0, y = 0;
+    
+    if (imgRatio > canvasRatio) {
+      drawW = height * imgRatio;
+      x = (width - drawW) / 2;
+    } else {
+      drawH = width / imgRatio;
+      y = (height - drawH) / 2;
+    }
+    ctx.drawImage(scene.bgImg, x, y, drawW, drawH);
+  } else {
+    // Fallback if not loaded
+    ctx.fillStyle = '#eee';
+    ctx.fillRect(0, 0, width, height);
+  }
 }
 
-// Draw a simple triangle mountain
-function drawMountain(ctx, centerX, baseY, width, height, color) {
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  ctx.moveTo(centerX - width / 2, baseY);
-  ctx.lineTo(centerX, baseY - height);
-  ctx.lineTo(centerX + width / 2, baseY);
-  ctx.closePath();
-  ctx.fill();
-}
-
-// Draw a simple tree (trunk + circle of leaves)
-function drawTree(ctx, x, y, trunkWidth, trunkHeight, palette) {
-  // Trunk
-  ctx.fillStyle = palette.treeTrunk;
-  ctx.fillRect(x - trunkWidth / 2, y - trunkHeight, trunkWidth, trunkHeight);
-
-  // Leaves
-  ctx.fillStyle = palette.treeLeaf;
-  ctx.beginPath();
-  ctx.arc(x, y - trunkHeight - trunkWidth * 1.5, trunkWidth * 2.2, 0, Math.PI * 2);
-  ctx.fill();
-}
-
-// ---- Draw the foreground subject (a person) ----
+// ---- Draw the foreground subject ----
 // This layer stays sharp (no blur applied here).
-function drawSubject(ctx, x, y, scale, palette, motionBlur = 0) {
-  const s = scale; // scale factor for sizing
+function drawSubject(ctx, width, height, sceneName, motionBlur = 0, xOffset = 0) {
+  const scene = SceneAssets[sceneName] || SceneAssets.portrait;
+  
+  if (!scene.subImg) return; // not loaded yet
 
   // If motion blur > 0, draw the subject with horizontal smear
   const blurSteps = motionBlur > 0 ? Math.floor(motionBlur * 6) : 0;
-  const stepOffset = motionBlur > 0 ? motionBlur * 3 : 0;
+  const stepOffset = motionBlur > 0 ? motionBlur * 4 : 0; // px per step
+
+  // Calculate subject size (e.g. 80% of height)
+  const subH = height * 0.85;
+  const subW = subH * (scene.subImg.width / scene.subImg.height);
+  const baseX = (width / 2) - (subW / 2) + xOffset;
+  const baseY = height - subH; // align to bottom
 
   // Draw multiple ghost copies for motion blur effect
   for (let i = blurSteps; i >= 0; i--) {
-    const alpha = i === 0 ? 1.0 : (0.12 / blurSteps) * (blurSteps - i);
-    const xOffset = i === 0 ? 0 : -(stepOffset * (i / blurSteps));
+    const alpha = i === 0 ? 1.0 : (0.15 / blurSteps) * (blurSteps - i);
+    const motionX = i === 0 ? 0 : -(stepOffset * i);
     ctx.globalAlpha = alpha;
-    drawPersonBody(ctx, x + xOffset, y, s, palette);
+    ctx.drawImage(scene.subImg, baseX + motionX, baseY, subW, subH);
   }
 
   ctx.globalAlpha = 1;
-}
-
-// Draw the actual person shape
-function drawPersonBody(ctx, x, y, s, palette) {
-  // Head (circle)
-  ctx.fillStyle = palette.subjectSkin;
-  ctx.beginPath();
-  ctx.arc(x, y - s * 2.5, s * 0.55, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Hair
-  ctx.fillStyle = palette.subjectHair;
-  ctx.beginPath();
-  ctx.arc(x, y - s * 2.85, s * 0.5, Math.PI, 0);
-  ctx.fill();
-
-  // Body / shirt
-  ctx.fillStyle = palette.subjectShirt;
-  ctx.beginPath();
-  ctx.roundRect(x - s * 0.4, y - s * 2.0, s * 0.8, s * 1.2, 4);
-  ctx.fill();
-
-  // Arms
-  ctx.fillStyle = palette.subjectSkin;
-  ctx.fillRect(x - s * 0.72, y - s * 2.0, s * 0.28, s * 0.9);
-  ctx.fillRect(x + s * 0.44, y - s * 2.0, s * 0.28, s * 0.9);
-
-  // Legs / pants
-  ctx.fillStyle = '#3A3A5C';
-  ctx.fillRect(x - s * 0.38, y - s * 0.8, s * 0.32, s * 0.85);
-  ctx.fillRect(x + s * 0.06, y - s * 0.8, s * 0.32, s * 0.85);
 }
 
 // ---- Apply ISO noise overlay directly on the canvas ----
@@ -168,7 +140,7 @@ function applyNoise(ctx, width, height, noiseAmount) {
 
   const imageData = ctx.getImageData(0, 0, width, height);
   const data = imageData.data;
-  const intensity = noiseAmount * 80; // scale 0-1 to pixel variance
+  const intensity = noiseAmount * 100; 
 
   for (let i = 0; i < data.length; i += 4) {
     const noise = (Math.random() - 0.5) * intensity;
@@ -189,6 +161,7 @@ function applyBrightness(ctx, width, height, multiplier) {
   const imageData = ctx.getImageData(0, 0, width, height);
   const data = imageData.data;
 
+  // Enhance contrast slightly when applying brightness to avoid washout
   for (let i = 0; i < data.length; i += 4) {
     data[i]     = Math.min(255, data[i]     * multiplier); // R
     data[i + 1] = Math.min(255, data[i + 1] * multiplier); // G

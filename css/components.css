@@ -230,6 +230,7 @@
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-heading);
+  white-space: nowrap;
 }
 
 /* The live value readout */
@@ -240,6 +241,7 @@
   background-color: var(--blue-light);
   padding: 2px 10px;
   border-radius: var(--radius-full);
+  white-space: nowrap;
 }
 
 /* The actual <input type="range"> */
@@ -592,7 +594,8 @@
 /* The visual camera body shape */
 .camera-body {
   position: relative;
-  width: 380px;
+  max-width: 380px;
+  width: 100%;
   margin: 0 auto;
   user-select: none;
 }

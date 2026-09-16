@@ -7,18 +7,11 @@
 //   - Shutter Speed (Motion Blur)
 //   - ISO (Noise & Brightness)
 // And the combined Exposure Triangle simulator.
-//
-// Each simulator is a self-contained class that:
-// 1. Draws the scene on a canvas
-// 2. Applies effects based on slider values
-// 3. Updates the info text explaining what's happening
 // ================================================
 
 
 // ================================================
 // APERTURE SIMULATOR
-// Controls: f-stop slider
-// Effect: background blur (depth of field)
 // ================================================
 class ApertureSimulator {
 
@@ -28,33 +21,24 @@ class ApertureSimulator {
     this.infoEl  = document.getElementById(infoId);
     this.valueEl = document.getElementById(valueId);
     this.scene   = scene;
-    this.palette = SCENE_PALETTES[scene];
 
-    // f-stop scale: index 0 = f/1.4 (wide open), index 6 = f/22 (narrow)
     this.fStops = ['f/1.4', 'f/2', 'f/2.8', 'f/4', 'f/5.6', 'f/8', 'f/11', 'f/16', 'f/22'];
+    this.currentSlider = 2; // f/2.8
 
-    this.render(2); // start at f/2.8
+    window.addEventListener('scene-assets-loaded', () => this.render(this.currentSlider));
+    this.render(this.currentSlider); 
   }
 
-  // Called when the aperture slider moves
-  // sliderValue = 0 (f/1.4) to 8 (f/22)
   render(sliderValue) {
+    this.currentSlider = sliderValue;
     const fStopLabel = this.fStops[sliderValue];
     const blurAmount = this.getBlurAmount(sliderValue);
 
-    // Update the displayed value
     this.valueEl.textContent = fStopLabel;
-
-    // Draw the scene with background blur applied
     this.drawWithBlur(blurAmount);
-
-    // Update the explanation text
     this.updateInfo(fStopLabel, sliderValue);
   }
 
-  // Map slider 0-8 to blur radius 0-20px
-  // Wide aperture (low f-number, low index) = lots of blur
-  // Narrow aperture (high f-number, high index) = no blur
   getBlurAmount(sliderIndex) {
     const maxBlur = 18;
     return maxBlur - (sliderIndex / 8) * maxBlur;
@@ -67,23 +51,14 @@ class ApertureSimulator {
 
     ctx.clearRect(0, 0, w, h);
 
-    // Draw background, then apply CSS blur via filter
     if (blurPx > 0) {
       ctx.save();
       ctx.filter = `blur(${blurPx.toFixed(1)}px)`;
     }
+    drawBackground(ctx, w, h, this.scene);
+    if (blurPx > 0) ctx.restore();
 
-    drawBackground(ctx, w, h, this.palette);
-
-    if (blurPx > 0) {
-      ctx.restore(); // reset filter before drawing subject
-    }
-
-    // Draw sharp foreground subject (no blur)
-    const subjectX = w / 2;
-    const subjectY = h * 0.88;
-    const subjectScale = h * 0.1;
-    drawSubject(ctx, subjectX, subjectY, subjectScale, this.palette);
+    drawSubject(ctx, w, h, this.scene);
   }
 
   updateInfo(fStopLabel, sliderIndex) {
@@ -98,7 +73,6 @@ class ApertureSimulator {
       `<strong>${fStopLabel} — Very Narrow:</strong> Maximum sharpness front to back. Used for product shots on tripod.`,
       `<strong>${fStopLabel} — Minimum Aperture:</strong> Everything sharp from close to horizon. Used for landscape with foreground detail.`
     ];
-
     this.infoEl.innerHTML = descriptions[sliderIndex] || descriptions[4];
   }
 }
@@ -106,8 +80,6 @@ class ApertureSimulator {
 
 // ================================================
 // SHUTTER SPEED SIMULATOR
-// Controls: shutter speed slider
-// Effect: motion blur on the moving subject
 // ================================================
 class ShutterSimulator {
 
@@ -117,9 +89,7 @@ class ShutterSimulator {
     this.infoEl  = document.getElementById(infoId);
     this.valueEl = document.getElementById(valueId);
     this.scene   = scene;
-    this.palette = SCENE_PALETTES[scene];
 
-    // Shutter speed scale: fast to slow
     this.speeds = [
       '1/4000s', '1/2000s', '1/1000s', '1/500s',
       '1/250s',  '1/125s',  '1/60s',
@@ -128,15 +98,30 @@ class ShutterSimulator {
     ];
 
     this.animationFrame = null;
-    this.subjectX = 0; // animated position of moving subject
+    this.subjectX = -50; 
+    this.currentSlider = 4;
+    this.currentBlur = 0;
+
+    window.addEventListener('scene-assets-loaded', () => this.drawCurrentFrame());
     this.startAnimation();
-    this.render(4); // start at 1/250s
+    this.render(this.currentSlider);
   }
 
-  // Animate the subject moving across the frame
   startAnimation() {
-    const animate = () => {
-      this.subjectX = (this.subjectX + 1.5) % (this.canvas.width + 60);
+    let lastTime = 0;
+    const animate = (time) => {
+      // Use time to keep consistent speed regardless of framerate
+      const dt = lastTime ? (time - lastTime) : 16;
+      lastTime = time;
+      
+      // Move subject horizontally
+      this.subjectX += (100 * (dt / 1000)); // pixels per second
+      
+      // Loop around
+      if (this.subjectX > this.canvas.width * 0.4) {
+        this.subjectX = -this.canvas.width * 0.4;
+      }
+      
       this.drawCurrentFrame();
       this.animationFrame = requestAnimationFrame(animate);
     };
@@ -163,34 +148,24 @@ class ShutterSimulator {
     const h = canvas.height;
 
     ctx.clearRect(0, 0, w, h);
-
-    // Draw static background (no blur here — shutter doesn't affect background)
-    drawBackground(ctx, w, h, this.palette);
-
-    // Draw moving subject with motion blur based on shutter speed
-    const subjectY    = h * 0.88;
-    const subjectScale = h * 0.1;
-    const xPos        = this.subjectX - 30;
-
-    drawSubject(ctx, xPos, subjectY, subjectScale, this.palette, this.currentBlur || 0);
+    drawBackground(ctx, w, h, this.scene);
+    
+    // Pass the offset and blur
+    drawSubject(ctx, w, h, this.scene, this.currentBlur, this.subjectX);
   }
 
-  // Map slider to motion blur intensity
-  // Fast shutter = no blur, slow shutter = heavy blur
   getMotionBlur(sliderIndex) {
-    // 0 = fastest (no blur), 12 = slowest (max blur)
     if (sliderIndex <= 4)  return 0;           // 1/4000s to 1/250s — frozen
-    if (sliderIndex === 5) return 0.15;         // 1/125s — tiny blur
-    if (sliderIndex === 6) return 0.40;         // 1/60s — noticeable
-    if (sliderIndex === 7) return 0.70;         // 1/30s — clear blur
-    if (sliderIndex === 8) return 1.0;          // 1/15s — strong
-    if (sliderIndex === 9) return 1.4;          // 1/8s
-    return 1.0 + (sliderIndex - 9) * 0.4;      // 1/4s and slower
+    if (sliderIndex === 5) return 0.2;         // 1/125s — tiny blur
+    if (sliderIndex === 6) return 0.5;         // 1/60s — noticeable
+    if (sliderIndex === 7) return 1.0;         // 1/30s — clear blur
+    if (sliderIndex === 8) return 1.6;          // 1/15s — strong
+    if (sliderIndex === 9) return 2.2;          // 1/8s
+    return 2.2 + (sliderIndex - 9) * 0.8;      // 1/4s and slower
   }
 
   updateInfo(speedLabel, sliderIndex) {
     let message = '';
-
     if (sliderIndex <= 2) {
       message = `<strong>${speedLabel} — Super Fast:</strong> Freezes fast-moving subjects perfectly. Used for hummingbirds, race cars, and water droplets.`;
     } else if (sliderIndex <= 4) {
@@ -202,7 +177,6 @@ class ShutterSimulator {
     } else {
       message = `<strong>${speedLabel} — Very Slow:</strong> Heavy motion blur. Long exposure photography. Tripod essential. Used for silky waterfalls, light trails, and star tracks.`;
     }
-
     this.infoEl.innerHTML = message;
   }
 }
@@ -210,8 +184,6 @@ class ShutterSimulator {
 
 // ================================================
 // ISO SIMULATOR
-// Controls: ISO slider
-// Effect: brightness + grain noise
 // ================================================
 class ISOSimulator {
 
@@ -221,21 +193,21 @@ class ISOSimulator {
     this.infoEl  = document.getElementById(infoId);
     this.valueEl = document.getElementById(valueId);
     this.scene   = scene;
-    this.palette = SCENE_PALETTES[scene];
 
-    // ISO values in typical stops
     this.isoValues = [100, 200, 400, 800, 1600, 3200, 6400];
+    this.currentSlider = 0;
 
-    this.render(0); // start at ISO 100
+    window.addEventListener('scene-assets-loaded', () => this.render(this.currentSlider));
+    this.render(this.currentSlider);
   }
 
   render(sliderIndex) {
+    this.currentSlider = sliderIndex;
     const isoValue    = this.isoValues[sliderIndex];
     const brightness  = this.getBrightness(sliderIndex);
     const noiseAmount = this.getNoiseAmount(sliderIndex);
 
     this.valueEl.textContent = `ISO ${isoValue}`;
-
     this.draw(brightness, noiseAmount);
     this.updateInfo(isoValue, sliderIndex);
   }
@@ -246,26 +218,18 @@ class ISOSimulator {
     const h = canvas.height;
 
     ctx.clearRect(0, 0, w, h);
+    drawBackground(ctx, w, h, this.scene);
+    drawSubject(ctx, w, h, this.scene);
 
-    // Draw the full scene first
-    drawBackground(ctx, w, h, this.palette);
-    drawSubject(ctx, w / 2, h * 0.88, h * 0.1, this.palette);
-
-    // Apply brightness shift (ISO makes image brighter)
     if (brightness !== 1) applyBrightness(ctx, w, h, brightness);
-
-    // Apply noise on top (ISO adds grain)
     if (noiseAmount > 0) applyNoise(ctx, w, h, noiseAmount);
   }
 
-  // Higher ISO = more brightness
-  // Doubles every stop: ISO 100 = 1x, ISO 200 = 1.3x, ISO 400 = 1.6x, etc.
   getBrightness(sliderIndex) {
     const brightnessLevels = [0.85, 1.0, 1.25, 1.55, 1.85, 2.1, 2.4];
     return brightnessLevels[sliderIndex] || 1;
   }
 
-  // Higher ISO = more noise
   getNoiseAmount(sliderIndex) {
     const noiseLevels = [0, 0.04, 0.10, 0.20, 0.38, 0.58, 0.80];
     return noiseLevels[sliderIndex] || 0;
@@ -281,7 +245,6 @@ class ISOSimulator {
       `<strong>ISO ${isoValue} — Very High:</strong> Clear grain/noise visible. Use only when you need a usable shot over a perfect one.`,
       `<strong>ISO ${isoValue} — Maximum ISO:</strong> Heavy noise. Colors may shift. Use only in extreme darkness. Grain becomes part of the aesthetic.`
     ];
-
     this.infoEl.innerHTML = descriptions[sliderIndex] || descriptions[0];
   }
 }
@@ -289,8 +252,6 @@ class ISOSimulator {
 
 // ================================================
 // EXPOSURE TRIANGLE — COMBINED SIMULATOR
-// Controls: all three sliders
-// Effect: combined brightness + blur + noise + meter
 // ================================================
 class ExposureTriangleSimulator {
 
@@ -300,26 +261,20 @@ class ExposureTriangleSimulator {
     this.infoEl   = document.getElementById(infoId);
     this.meterEl  = document.getElementById(meterId);
     this.scene    = scene;
-    this.palette  = SCENE_PALETTES[scene];
 
-    // Current settings
-    this.settings = {
-      aperture: 2,  // index into fStop array
-      shutter: 4,   // index into shutter speed array
-      iso: 0        // index into ISO array
-    };
+    this.settings = { aperture: 2, shutter: 4, iso: 0 };
 
     this.fStops  = ['f/1.4', 'f/2', 'f/2.8', 'f/4', 'f/5.6', 'f/8', 'f/11', 'f/16', 'f/22'];
     this.speeds  = ['1/4000s','1/2000s','1/1000s','1/500s','1/250s','1/125s','1/60s','1/30s','1s'];
     this.isoVals = [100, 200, 400, 800, 1600, 3200, 6400];
 
+    window.addEventListener('scene-assets-loaded', () => this.render());
     this.render();
   }
 
-  // Update one setting and re-render
   setAperture(index)  { this.settings.aperture = index; this.render(); }
   setShutter(index)   { this.settings.shutter  = index; this.render(); }
-  setISO(index)       { this.settings.iso       = index; this.render(); }
+  setISO(index)       { this.settings.iso      = index; this.render(); }
 
   render() {
     const { aperture, shutter, iso } = this.settings;
@@ -329,29 +284,22 @@ class ExposureTriangleSimulator {
 
     ctx.clearRect(0, 0, w, h);
 
-    // Calculate individual effects
     const blurAmount   = this.getApertureBlur(aperture);
     const brightness   = this.getCombinedBrightness(aperture, shutter, iso);
     const noiseAmount  = this.getNoiseAmount(iso);
 
-    // Draw background (with aperture blur)
     if (blurAmount > 0) {
       ctx.save();
       ctx.filter = `blur(${blurAmount.toFixed(1)}px)`;
     }
-    drawBackground(ctx, w, h, this.palette);
+    drawBackground(ctx, w, h, this.scene);
     if (blurAmount > 0) ctx.restore();
 
-    // Draw subject
-    drawSubject(ctx, w / 2, h * 0.88, h * 0.1, this.palette);
+    drawSubject(ctx, w, h, this.scene);
 
-    // Apply brightness across full image
     if (brightness !== 1) applyBrightness(ctx, w, h, brightness);
-
-    // Apply noise
     if (noiseAmount > 0) applyNoise(ctx, w, h, noiseAmount);
 
-    // Update exposure meter and info
     this.updateMeter(aperture, shutter, iso);
     this.updateInfo(aperture, shutter, iso);
   }
@@ -360,19 +308,10 @@ class ExposureTriangleSimulator {
     return 18 - (apertureIndex / 8) * 18;
   }
 
-  // Exposure Value increases with: wider aperture, slower shutter, higher ISO
-  // This gives us a simple combined brightness multiplier
   getCombinedBrightness(apertureIndex, shutterIndex, isoIndex) {
-    // Aperture: index 0 = widest (most light), index 8 = narrowest (least light)
     const apertureLight = 1.0 + (8 - apertureIndex) * 0.12;
-
-    // Shutter: index 0 = fastest (least light), index 8 = slowest (most light)
     const shutterLight = 0.6 + shutterIndex * 0.1;
-
-    // ISO: higher ISO = brighter
     const isoLight = [0.85, 1.0, 1.2, 1.5, 1.8, 2.1, 2.4][isoIndex] || 1;
-
-    // Clamp to prevent total white or pure black
     return Math.min(3.0, Math.max(0.1, apertureLight * shutterLight * isoLight * 0.6));
   }
 
@@ -380,16 +319,10 @@ class ExposureTriangleSimulator {
     return [0, 0.04, 0.10, 0.20, 0.38, 0.58, 0.80][isoIndex] || 0;
   }
 
-  // Calculate exposure level: negative = underexposed, 0 = balanced, positive = overexposed
-  // Used to position the meter needle
   getExposureLevel(apertureIndex, shutterIndex, isoIndex) {
-    // +1 per stop in aperture (wide open = more light)
-    const apertureEV = (8 - apertureIndex) - 4; // center around f/5.6
-    // +1 per stop in shutter (slow = more light)
-    const shutterEV  = shutterIndex - 4;          // center around 1/250s
-    // +1 per ISO doubling
-    const isoEV      = isoIndex - 1;             // center around ISO 200
-
+    const apertureEV = (8 - apertureIndex) - 4; 
+    const shutterEV  = shutterIndex - 4;        
+    const isoEV      = isoIndex - 1;            
     return apertureEV + shutterEV + isoEV;
   }
 
@@ -398,15 +331,13 @@ class ExposureTriangleSimulator {
     const needle = this.meterEl;
     if (!needle) return;
 
-    // Map EV (-4 to +4) to needle position (10% to 90%)
     const clamped  = Math.max(-4, Math.min(4, ev));
-    const position = 50 + (clamped / 4) * 40; // 10% to 90%
+    const position = 50 + (clamped / 4) * 40; 
     needle.style.left = `${position}%`;
 
-    // Color the needle based on exposure
-    if (Math.abs(clamped) <= 0.5)     needle.style.backgroundColor = '#16a34a'; // balanced
-    else if (Math.abs(clamped) <= 1.5) needle.style.backgroundColor = '#f59e0b'; // slightly off
-    else                               needle.style.backgroundColor = '#dc2626'; // badly off
+    if (Math.abs(clamped) <= 0.5)      needle.style.backgroundColor = '#16a34a'; 
+    else if (Math.abs(clamped) <= 1.5) needle.style.backgroundColor = '#f59e0b'; 
+    else                               needle.style.backgroundColor = '#dc2626'; 
   }
 
   updateInfo(aperture, shutter, iso) {

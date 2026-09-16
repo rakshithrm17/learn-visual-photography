@@ -396,6 +396,29 @@ function onCameraButtonClick(buttonId) {
   // Find button data
   const btnData = CAMERA_BUTTONS.find(b => b.id === buttonId);
   if (btnData) renderButtonInfoPanel(btnData);
+
+  // Apply real-time effects to the simulator based on the button
+  if (buttonId === 'shutter-full') {
+    capturePhoto();
+  } else if (buttonId === 'iso-button' && captureSim) {
+    const slider = document.getElementById('cap-iso-slider');
+    if (slider) {
+      slider.value = (parseInt(slider.value) + 1) % 7;
+      slider.dispatchEvent(new Event('input'));
+    }
+  } else if (buttonId === 'main-dial' && captureSim) {
+    const slider = document.getElementById('cap-aperture-slider');
+    if (slider) {
+      slider.value = (parseInt(slider.value) + 1) % 9;
+      slider.dispatchEvent(new Event('input'));
+    }
+  } else if (buttonId === 'exposure-comp' && captureSim) {
+    const slider = document.getElementById('cap-shutter-slider');
+    if (slider) {
+      slider.value = (parseInt(slider.value) + 1) % 9;
+      slider.dispatchEvent(new Event('input'));
+    }
+  }
 }
 
 // Show explanatory info for the selected button
