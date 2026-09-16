@@ -546,7 +546,7 @@ function updateCaptureSimulator() {
 
   // Use the combined Exposure Triangle simulator for the capture view
   if (!captureSim) {
-    captureSim = new ExposureTriangleSimulator('capture-canvas', 'capture-info', 'capture-meter-needle', scene);
+    captureSim = new ExposureTriangleSimulator('capture-sim', 'capture-info', 'capture-meter-needle', scene);
   }
 
   // Adjust default aperture based on lens's blur potential
@@ -555,22 +555,41 @@ function updateCaptureSimulator() {
   captureSim.setAperture(defaultAperture);
 }
 
-// Simulate pressing the shutter — freeze the current canvas state
+// Simulate pressing the shutter — freeze the current simulator state
 function capturePhoto() {
-  const canvas  = document.getElementById('capture-canvas');
-  const preview = document.getElementById('capture-preview');
-  if (!canvas || !preview) return;
+  const sim  = document.getElementById('capture-sim');
+  const previewContainer = document.getElementById('preview-container');
+  if (!sim || !previewContainer) return;
 
-  // Copy canvas to the preview image
-  const dataUrl = canvas.toDataURL('image/png');
-  preview.src  = dataUrl;
-  preview.style.display = 'block';
+  // Remove the old preview img tag if it exists
+  const oldImg = document.getElementById('capture-preview');
+  if (oldImg) oldImg.remove();
+  
+  // Remove any previously cloned capture
+  const oldClone = document.getElementById('capture-clone');
+  if (oldClone) oldClone.remove();
 
-  // Show "Captured!" flash animation
-  const flash = document.getElementById('shutter-flash');
-  if (flash) {
-    flash.style.opacity = '1';
-    setTimeout(() => { flash.style.opacity = '0'; }, 200);
+  // Clone the DOM simulator to create a "snapshot"
+  const clone = sim.cloneNode(true);
+  clone.id = 'capture-clone';
+  clone.style.height = '200px';
+  clone.style.border = '1px solid var(--border)';
+  clone.style.borderRadius = 'var(--radius-md)';
+  clone.style.boxShadow = 'var(--shadow-md)';
+  
+  // Strip out the flash and meter overlays from the clone so it looks like a clean photo
+  const flash = clone.querySelector('#shutter-flash');
+  if (flash) flash.remove();
+  
+  // Append to preview container
+  previewContainer.appendChild(clone);
+  previewContainer.style.display = 'block';
+
+  // Show "Captured!" flash animation on the main simulator
+  const mainFlash = sim.querySelector('#shutter-flash');
+  if (mainFlash) {
+    mainFlash.style.opacity = '1';
+    setTimeout(() => { mainFlash.style.opacity = '0'; }, 200);
   }
 }
 

@@ -98,7 +98,7 @@
       <div class="simulator reveal">
 
         <!-- Canvas area -->
-        <div class="simulator-canvas-area sim-container" style="height:320px;">
+        <div class="simulator-canvas-area sim-container" id="aperture-canvas" style="height:320px;">
           <div class="sim-layer sim-bg" style="background-image: url('../assets/images/sim_portrait.jpg');"></div>
           <div class="sim-layer sim-bg-blur" id="aperture-blur-layer" style="background-image: url('../assets/images/sim_portrait.jpg');"></div>
         </div>
@@ -173,7 +173,7 @@
       </div>
 
       <div class="simulator reveal">
-        <div class="simulator-canvas-area sim-container" style="height:320px; background-color: #e0f2fe;">
+        <div class="simulator-canvas-area sim-container" id="shutter-canvas" style="height:320px; background-color: #e0f2fe;">
           <div class="sim-pinwheel-container" id="shutter-pinwheel-container">
             <svg viewBox="0 0 100 100" class="sim-pinwheel" id="shutter-pinwheel">
               <path d="M50 50 L50 10 A40 40 0 0 1 90 50 Z" fill="#ef4444"/>
@@ -250,7 +250,7 @@
       </div>
 
       <div class="simulator reveal">
-        <div class="simulator-canvas-area sim-container" style="height:320px;">
+        <div class="simulator-canvas-area sim-container" id="iso-canvas" style="height:320px;">
           <div class="sim-layer sim-bg" id="iso-image" style="background-image: url('../assets/images/sim_lowlight.jpg');"></div>
           <div class="sim-layer sim-noise" id="iso-noise"></div>
           <div class="sim-layer sim-brightness" id="iso-brightness" style="background-color: white; opacity: 0;"></div>
@@ -306,7 +306,7 @@
 
         <!-- Left: Combined simulator canvas -->
         <div class="simulator">
-          <div class="simulator-canvas-area sim-container" style="height:280px;">
+          <div class="simulator-canvas-area sim-container" id="exposure-canvas" style="height:280px;">
             <div class="sim-layer sim-bg" id="exp-image" style="background-image: url('../assets/images/sim_portrait.jpg');"></div>
             <div class="sim-layer sim-bg-blur" id="exp-blur-layer" style="background-image: url('../assets/images/sim_portrait.jpg');"></div>
             <div class="sim-layer sim-noise" id="exp-noise"></div>
@@ -423,7 +423,6 @@
 
   <!-- ===== SCRIPTS ===== -->
   <script src="../js/main.js"></script>
-  <script src="../js/simulators/exposure-simulator.js"></script>
   <script src="../js/simulators/exposure-simulator.js"></script>
   <script>
     // ---- Initialize all three simulators on page load ----
