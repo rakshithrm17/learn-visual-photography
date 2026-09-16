@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Composition Rules | Learn Visual Photography</title>
+  <meta name="description" content="Learn composition rules: rule of thirds, leading lines, framing, symmetry. Apply them interactively on a live scene." />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/animations.css" />
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">📷</div>VisualPhoto</a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="module1.html">Camera Basics</a></li>
+        <li><a href="module2.html">Exposure</a></li>
+        <li><a href="module3.html">Lenses</a></li>
+        <li><a href="module4.html">Camera Types</a></li>
+        <li><a href="module5.html">Camera Explorer</a></li>
+        <li><a href="module6.html" class="active">Composition</a></li>
+      </ul>
+      <button class="nav-hamburger" id="nav-hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="module-header">
+    <div class="container">
+      <div class="module-label">Module 6</div>
+      <h1>Composition Rules</h1>
+      <p>Composition is how you arrange elements within your frame. Even with a perfect exposure, a poorly composed photo won't look great. These rules help you create visually pleasing, intentional photographs.</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- Interactive composition viewer -->
+      <div class="reveal" style="margin-bottom:40px;">
+        <h2 style="margin-bottom:8px;">Interactive Composition Viewer</h2>
+        <p class="text-muted mb-3">Click a rule below to see the overlay applied to the scene.</p>
+
+        <!-- Rule selector tabs -->
+        <div class="scene-tabs" style="padding:0;background:none;border:none;gap:8px;margin-bottom:16px;">
+          <button class="scene-tab active" onclick="showRule('none')">No Overlay</button>
+          <button class="scene-tab" onclick="showRule('thirds')">Rule of Thirds</button>
+          <button class="scene-tab" onclick="showRule('leading')">Leading Lines</button>
+          <button class="scene-tab" onclick="showRule('framing')">Framing</button>
+          <button class="scene-tab" onclick="showRule('symmetry')">Symmetry</button>
+          <button class="scene-tab" onclick="showRule('negative')">Negative Space</button>
+        </div>
+
+        <div class="simulator">
+          <div class="simulator-canvas-area" style="height:340px;">
+            <canvas id="comp-canvas" width="640" height="340" style="width:100%;height:100%;"></canvas>
+          </div>
+          <div class="simulator-controls">
+            <div class="simulator-info">
+              <p id="comp-info">Click a composition rule above to see how it works on the scene.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rules explained -->
+      <div class="grid-2 reveal">
+
+        <div class="card card-accent">
+          <h4 style="margin-bottom:8px;">📐 Rule of Thirds</h4>
+          <p class="text-sm">Divide the frame into a 3×3 grid. Place your subject at one of the 4 intersection points rather than the center. The eye is naturally drawn to these points, making the photo more dynamic.</p>
+          <p class="text-sm mt-2 text-muted"><strong>Tip:</strong> For landscapes, place the horizon on the top or bottom third — never the middle.</p>
+        </div>
+
+        <div class="card card-accent">
+          <h4 style="margin-bottom:8px;">➡️ Leading Lines</h4>
+          <p class="text-sm">Use natural lines in the scene (roads, fences, rivers, railway tracks) to guide the viewer's eye toward your subject or into the depth of the image.</p>
+          <p class="text-sm mt-2 text-muted"><strong>Tip:</strong> Lines that start from a corner and lead toward the center are most effective.</p>
+        </div>
+
+        <div class="card card-accent">
+          <h4 style="margin-bottom:8px;">🖼️ Framing</h4>
+          <p class="text-sm">Use elements in the foreground (doorways, tree branches, tunnels, windows) to create a natural frame around your subject. This draws attention to the subject and adds depth.</p>
+          <p class="text-sm mt-2 text-muted"><strong>Tip:</strong> The frame doesn't need to be complete — even partial framing works.</p>
+        </div>
+
+        <div class="card card-accent">
+          <h4 style="margin-bottom:8px;">🔄 Symmetry</h4>
+          <p class="text-sm">When a scene has perfect or near-perfect symmetry, place your subject in the center. Reflections in water, arched hallways, and long corridors work perfectly for this.</p>
+          <p class="text-sm mt-2 text-muted"><strong>Tip:</strong> Break the symmetry intentionally with one element to create tension.</p>
+        </div>
+
+        <div class="card card-accent">
+          <h4 style="margin-bottom:8px;">⬜ Negative Space</h4>
+          <p class="text-sm">Leave large empty areas (sky, blank wall, open water) around your subject. This emptiness emphasizes the subject and creates a sense of minimalism and calm.</p>
+          <p class="text-sm mt-2 text-muted"><strong>Tip:</strong> Have the subject facing into the negative space, not away from it.</p>
+        </div>
+
+        <div class="card card-accent">
+          <h4 style="margin-bottom:8px;">📏 Fill the Frame</h4>
+          <p class="text-sm">Sometimes the most impactful photo eliminates all background and gets as close to the subject as possible. Use a telephoto or macro lens to isolate textures and details.</p>
+          <p class="text-sm mt-2 text-muted"><strong>Tip:</strong> Great for portraits, food photography, and texture shots.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Completion section -->
+  <section class="section section-bg">
+    <div class="container text-center">
+      <div style="font-size:3rem;margin-bottom:16px;">🎉</div>
+      <h2 style="margin-bottom:12px;">You've Completed All 6 Modules!</h2>
+      <p style="max-width:520px;margin:0 auto 32px;">
+        You now understand aperture, shutter speed, ISO, lenses, camera types, and composition.
+        Go explore a real camera in the Camera Explorer to put it all together.
+      </p>
+      <div class="row" style="justify-content:center;gap:16px;">
+        <a href="module5.html" class="btn btn-primary btn-lg">Open Camera Explorer</a>
+        <a href="../index.html" class="btn btn-outline btn-lg">Back to Home</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="module-nav">
+      <a href="module5.html">← Camera Explorer</a>
+      <a href="../index.html">Back to Home →</a>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container"><p>Learn Visual Photography · Built for curious beginners</p></div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/simulators/scene-renderer.js"></script>
+  <script>
+    const canvas  = document.getElementById('comp-canvas');
+    const ctx     = canvas.getContext('2d');
+    const infoEl  = document.getElementById('comp-info');
+    const palette = SCENE_PALETTES.portrait;
+
+    // Draw the base scene first, then apply the chosen overlay
+    function renderComposition(rule) {
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+      drawBackground(ctx, w, h, palette);
+      drawSubject(ctx, w * 0.33, h * 0.88, h * 0.1, palette); // subject at left-third intersection
+
+      switch (rule) {
+        case 'thirds':   drawThirdsOverlay(w, h);   break;
+        case 'leading':  drawLeadingLines(w, h);    break;
+        case 'framing':  drawFramingOverlay(w, h);  break;
+        case 'symmetry': drawSymmetryOverlay(w, h); break;
+        case 'negative': drawNegativeSpace(w, h);   break;
+        default: break;
+      }
+    }
+
+    function drawThirdsOverlay(w, h) {
+      ctx.strokeStyle = 'rgba(37, 99, 235, 0.7)';
+      ctx.lineWidth   = 1.5;
+      ctx.setLineDash([4, 4]);
+
+      // Vertical lines
+      ctx.beginPath(); ctx.moveTo(w / 3, 0); ctx.lineTo(w / 3, h); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(w * 2 / 3, 0); ctx.lineTo(w * 2 / 3, h); ctx.stroke();
+
+      // Horizontal lines
+      ctx.beginPath(); ctx.moveTo(0, h / 3); ctx.lineTo(w, h / 3); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, h * 2 / 3); ctx.lineTo(w, h * 2 / 3); ctx.stroke();
+
+      ctx.setLineDash([]);
+
+      // Intersection dots
+      [[w/3, h/3],[w*2/3, h/3],[w/3, h*2/3],[w*2/3, h*2/3]].forEach(([x, y]) => {
+        ctx.fillStyle = '#2563eb';
+        ctx.beginPath();
+        ctx.arc(x, y, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(x, y, 3, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      infoEl.innerHTML = '<strong>Rule of Thirds:</strong> The blue grid divides the frame into 9 equal parts. The subject (person) is placed at the left intersection point — not the center. This creates a more dynamic, visually interesting composition.';
+    }
+
+    function drawLeadingLines(w, h) {
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.8)';
+      ctx.lineWidth   = 3;
+
+      // Draw road/path lines converging toward horizon where subject stands
+      ctx.beginPath();
+      ctx.moveTo(0, h);
+      ctx.lineTo(w * 0.33, h * 0.68);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(w * 0.2, h);
+      ctx.lineTo(w * 0.33, h * 0.68);
+      ctx.stroke();
+
+      // Arrow indicator
+      ctx.fillStyle = '#f59e0b';
+      ctx.font      = 'bold 12px Inter, sans-serif';
+      ctx.fillText('Leading lines guide the eye to the subject →', 10, h - 14);
+
+      infoEl.innerHTML = '<strong>Leading Lines:</strong> The amber lines represent a path or road that naturally draws the viewer\'s eye from the bottom corners toward the subject. This creates depth and guides attention.';
+    }
+
+    function drawFramingOverlay(w, h) {
+      // Draw a "frame within frame" border suggesting tree branches or doorway
+      ctx.strokeStyle = 'rgba(34, 97, 43, 0.8)';
+      ctx.lineWidth   = 20;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(0, h);
+      ctx.lineTo(w * 0.15, h);
+      ctx.lineTo(w * 0.15, 0);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(w, 0);
+      ctx.lineTo(w, h);
+      ctx.lineTo(w * 0.85, h);
+      ctx.lineTo(w * 0.85, 0);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(w, 0);
+      ctx.lineTo(w, h * 0.15);
+      ctx.lineTo(0, h * 0.15);
+      ctx.stroke();
+
+      infoEl.innerHTML = '<strong>Framing:</strong> The green borders represent tree trunks, a doorway, or arch that frames the scene. This creates a "frame within a frame," drawing attention to the subject in the center and adding depth.';
+    }
+
+    function drawSymmetryOverlay(w, h) {
+      // Center vertical line
+      ctx.strokeStyle = 'rgba(220, 38, 38, 0.7)';
+      ctx.lineWidth   = 2;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath(); ctx.moveTo(w / 2, 0); ctx.lineTo(w / 2, h); ctx.stroke();
+
+      // Center horizontal line
+      ctx.beginPath(); ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2); ctx.stroke();
+
+      ctx.setLineDash([]);
+      ctx.fillStyle = 'rgba(220, 38, 38, 0.7)';
+      ctx.font = '11px Inter, sans-serif';
+      ctx.fillText('← Symmetry axis →', w / 2 - 60, 20);
+
+      infoEl.innerHTML = '<strong>Symmetry:</strong> Placing the subject on the center axis works when the scene itself is symmetrical — like a reflection in water, a hallway, or an arch. Both sides of the frame mirror each other.';
+    }
+
+    function drawNegativeSpace(w, h) {
+      // Highlight the empty sky area
+      ctx.fillStyle = 'rgba(37, 99, 235, 0.15)';
+      ctx.fillRect(0, 0, w, h * 0.6);
+
+      ctx.strokeStyle = 'rgba(37, 99, 235, 0.5)';
+      ctx.lineWidth   = 2;
+      ctx.setLineDash([5, 5]);
+      ctx.strokeRect(2, 2, w - 4, h * 0.6 - 2);
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = 'rgba(37, 99, 235, 0.7)';
+      ctx.font      = 'bold 14px Inter, sans-serif';
+      ctx.fillText('Negative space (empty sky)', w / 2 - 110, h * 0.3);
+
+      infoEl.innerHTML = '<strong>Negative Space:</strong> The large empty sky above creates "negative space." This emptiness makes the subject feel small and alone, emphasizing isolation or freedom. The subject faces into the empty space.';
+    }
+
+    function showRule(rule) {
+      // Update tab active states
+      document.querySelectorAll('.scene-tab').forEach((btn, i) => {
+        const rules = ['none','thirds','leading','framing','symmetry','negative'];
+        btn.classList.toggle('active', rules[i] === rule);
+      });
+
+      renderComposition(rule);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderComposition('none');
+    });
+  </script>
+</body>
+</html>

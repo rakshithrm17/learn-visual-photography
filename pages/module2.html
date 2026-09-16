@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exposure Triangle — Aperture, Shutter Speed, ISO | Learn Visual Photography</title>
+  <meta name="description" content="Learn aperture, shutter speed, and ISO through live interactive simulators. See how each setting changes your photo in real time." />
+
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/animations.css" />
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="../index.html" class="nav-logo">
+        <div class="nav-logo-icon">📷</div>
+        VisualPhoto
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="module1.html">Camera Basics</a></li>
+        <li><a href="module2.html">Exposure</a></li>
+        <li><a href="module3.html">Lenses</a></li>
+        <li><a href="module4.html">Camera Types</a></li>
+        <li><a href="module5.html">Camera Explorer</a></li>
+        <li><a href="module6.html">Composition</a></li>
+      </ul>
+      <button class="nav-hamburger" id="nav-hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+
+  <!-- ===== MODULE HEADER ===== -->
+  <div class="module-header">
+    <div class="container">
+      <div class="module-label">Module 2</div>
+      <h1>The Exposure Triangle</h1>
+      <p>Three settings control every photo: aperture, shutter speed, and ISO. Change one and the others must balance out. Use the simulators below to see exactly how each one works.</p>
+    </div>
+  </div>
+
+
+  <!-- ===== TRIANGLE DIAGRAM ===== -->
+  <section class="section-sm section-bg">
+    <div class="container text-center">
+      <h2 style="margin-bottom:8px;">The Triangle at a Glance</h2>
+      <p style="margin-bottom:32px;max-width:520px;margin-left:auto;margin-right:auto;">
+        Every photo is a balance between these three. Change one, and the image gets brighter or darker.
+        The skill is learning to balance all three for the result you want.
+      </p>
+
+      <!-- Triangle visual -->
+      <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;">
+
+        <div class="card" style="width:200px;text-align:center;padding:28px 16px;">
+          <div style="font-size:2.5rem;margin-bottom:12px;">⬡</div>
+          <h4 style="margin-bottom:6px;color:var(--blue);">Aperture</h4>
+          <p class="text-sm">How wide the lens iris opens. Controls <strong>depth of field</strong> (background blur).</p>
+          <div style="margin-top:12px;font-size:0.75rem;color:var(--text-muted);">f/1.4 ← → f/22</div>
+        </div>
+
+        <div class="card" style="width:200px;text-align:center;padding:28px 16px;">
+          <div style="font-size:2.5rem;margin-bottom:12px;">⏱️</div>
+          <h4 style="margin-bottom:6px;color:var(--blue);">Shutter Speed</h4>
+          <p class="text-sm">How long the sensor is exposed. Controls <strong>motion blur</strong>.</p>
+          <div style="margin-top:12px;font-size:0.75rem;color:var(--text-muted);">1/4000s ← → 1s</div>
+        </div>
+
+        <div class="card" style="width:200px;text-align:center;padding:28px 16px;">
+          <div style="font-size:2.5rem;margin-bottom:12px;">🌟</div>
+          <h4 style="margin-bottom:6px;color:var(--blue);">ISO</h4>
+          <p class="text-sm">Sensor sensitivity to light. Controls <strong>brightness and noise</strong>.</p>
+          <div style="margin-top:12px;font-size:0.75rem;color:var(--text-muted);">ISO 100 ← → ISO 6400</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== 2A: APERTURE SIMULATOR ===== -->
+  <section class="section" id="aperture-section">
+    <div class="container">
+
+      <!-- Section heading -->
+      <div style="margin-bottom:32px;" class="reveal">
+        <span class="badge badge-amber mb-2">2A</span>
+        <h2>Aperture — Depth of Field</h2>
+        <p style="max-width:580px;margin-top:8px;">
+          Aperture is the size of the opening in the lens iris. A <strong>wide aperture (low f-number)</strong>
+          lets in more light and blurs the background. A <strong>narrow aperture (high f-number)</strong>
+          keeps everything sharp front to back.
+        </p>
+      </div>
+
+      <!-- Aperture simulator -->
+      <div class="simulator reveal">
+
+        <!-- Canvas area -->
+        <div class="simulator-canvas-area" style="height:320px;">
+          <canvas id="aperture-canvas" width="640" height="320" style="width:100%;height:100%;"></canvas>
+        </div>
+
+        <!-- Controls -->
+        <div class="simulator-controls">
+
+          <!-- f-stop slider -->
+          <div class="slider-group">
+            <div class="slider-label-row">
+              <span class="slider-label">Aperture (f-stop)</span>
+              <span class="slider-value" id="aperture-value">f/2.8</span>
+            </div>
+            <input
+              type="range"
+              class="slider"
+              id="aperture-slider"
+              min="0" max="8" step="1" value="2"
+              oninput="onApertureChange(this.value)"
+              aria-label="Aperture slider"
+            />
+            <div class="slider-scale">
+              <span>f/1.4 (wide)</span>
+              <span>f/5.6</span>
+              <span>f/22 (narrow)</span>
+            </div>
+          </div>
+
+          <!-- Info box -->
+          <div class="simulator-info">
+            <p id="aperture-info">Move the slider to see how aperture changes the photo.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Explainer cards below -->
+      <div class="grid-2 mt-4 reveal">
+        <div class="callout callout-blue">
+          <div class="callout-icon">💡</div>
+          <div class="callout-body">
+            <strong>Wide Aperture (f/1.4 – f/2.8)</strong>
+            <p>Background goes blurry. Subject "pops" out. Used for portraits, indoor photography, and low-light situations. Lets in the most light.</p>
+          </div>
+        </div>
+        <div class="callout callout-amber">
+          <div class="callout-icon">🏔️</div>
+          <div class="callout-body">
+            <strong>Narrow Aperture (f/8 – f/22)</strong>
+            <p>Everything is sharp from near to far. Used for landscape photos where you want the mountains AND the foreground flowers in focus.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+
+  <!-- ===== 2B: SHUTTER SPEED SIMULATOR ===== -->
+  <section class="section" id="shutter-section">
+    <div class="container">
+
+      <div style="margin-bottom:32px;" class="reveal">
+        <span class="badge badge-amber mb-2">2B</span>
+        <h2>Shutter Speed — Freezing Motion</h2>
+        <p style="max-width:580px;margin-top:8px;">
+          Shutter speed is how long the camera's sensor is exposed to light.
+          A <strong>fast shutter</strong> freezes a moving subject sharply.
+          A <strong>slow shutter</strong> creates motion blur — the subject streaks across the frame.
+        </p>
+      </div>
+
+      <div class="simulator reveal">
+        <div class="simulator-canvas-area" style="height:320px;">
+          <canvas id="shutter-canvas" width="640" height="320" style="width:100%;height:100%;"></canvas>
+        </div>
+
+        <div class="simulator-controls">
+          <div class="slider-group">
+            <div class="slider-label-row">
+              <span class="slider-label">Shutter Speed</span>
+              <span class="slider-value" id="shutter-value">1/250s</span>
+            </div>
+            <input
+              type="range"
+              class="slider"
+              id="shutter-slider"
+              min="0" max="12" step="1" value="4"
+              oninput="onShutterChange(this.value)"
+              aria-label="Shutter speed slider"
+            />
+            <div class="slider-scale">
+              <span>1/4000s (fast)</span>
+              <span>1/60s</span>
+              <span>1s (slow)</span>
+            </div>
+          </div>
+
+          <div class="simulator-info">
+            <p id="shutter-info">Move the slider to see how shutter speed affects a moving subject.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2 mt-4 reveal">
+        <div class="callout callout-blue">
+          <div class="callout-icon">⚡</div>
+          <div class="callout-body">
+            <strong>Fast Shutter (1/500s – 1/4000s)</strong>
+            <p>Freezes fast subjects. Birds in flight, athletes, water droplets. No motion blur — every detail is sharp. Needs more light to compensate.</p>
+          </div>
+        </div>
+        <div class="callout callout-amber">
+          <div class="callout-icon">💧</div>
+          <div class="callout-body">
+            <strong>Slow Shutter (1/15s – 1s)</strong>
+            <p>Creates motion blur. Silky waterfalls, light trails, streaking cars. Must use a tripod! Any camera movement also blurs.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+
+  <!-- ===== 2C: ISO SIMULATOR ===== -->
+  <section class="section" id="iso-section">
+    <div class="container">
+
+      <div style="margin-bottom:32px;" class="reveal">
+        <span class="badge badge-amber mb-2">2C</span>
+        <h2>ISO — Sensitivity and Noise</h2>
+        <p style="max-width:580px;margin-top:8px;">
+          ISO controls how sensitive the sensor is to light.
+          <strong>Low ISO</strong> gives a clean, noise-free image but needs more light.
+          <strong>High ISO</strong> brightens the image in dark situations but adds visible grain.
+        </p>
+      </div>
+
+      <div class="simulator reveal">
+        <div class="simulator-canvas-area" style="height:320px;">
+          <canvas id="iso-canvas" width="640" height="320" style="width:100%;height:100%;"></canvas>
+        </div>
+
+        <div class="simulator-controls">
+          <div class="slider-group">
+            <div class="slider-label-row">
+              <span class="slider-label">ISO Sensitivity</span>
+              <span class="slider-value" id="iso-value">ISO 100</span>
+            </div>
+            <input
+              type="range"
+              class="slider"
+              id="iso-slider"
+              min="0" max="6" step="1" value="0"
+              oninput="onISOChange(this.value)"
+              aria-label="ISO slider"
+            />
+            <div class="slider-scale">
+              <span>ISO 100 (clean)</span>
+              <span>ISO 800</span>
+              <span>ISO 6400 (noisy)</span>
+            </div>
+          </div>
+
+          <div class="simulator-info">
+            <p id="iso-info">Move the slider to see how ISO affects brightness and grain.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+
+  <!-- ===== 2D: COMBINED EXPOSURE TRIANGLE ===== -->
+  <section class="section section-bg" id="exposure-section">
+    <div class="container">
+
+      <div style="margin-bottom:32px;" class="reveal">
+        <span class="badge badge-amber mb-2">2D</span>
+        <h2>The Triangle Combined</h2>
+        <p style="max-width:580px;margin-top:8px;">
+          Now control all three at once. Watch the exposure meter — the needle shows whether your photo will be
+          too dark (underexposed) or too bright (overexposed). Try to keep it centered.
+        </p>
+      </div>
+
+      <div class="grid-2 reveal" style="gap:32px;">
+
+        <!-- Left: Combined simulator canvas -->
+        <div class="simulator">
+          <div class="simulator-canvas-area" style="height:280px;">
+            <canvas id="exposure-canvas" width="480" height="280" style="width:100%;height:100%;"></canvas>
+          </div>
+
+          <!-- Exposure meter -->
+          <div style="padding:16px 20px;background:var(--bg-page);border-bottom:1px solid var(--border);">
+            <div style="font-size:0.8rem;font-weight:600;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em;">Exposure Meter</div>
+            <div class="meter-track">
+              <div class="meter-needle" id="exposure-meter-needle"></div>
+            </div>
+            <div class="meter-labels">
+              <span>◀ Under</span>
+              <span>Correct</span>
+              <span>Over ▶</span>
+            </div>
+          </div>
+
+          <div class="simulator-controls" style="padding:12px 16px;">
+            <div class="simulator-info" style="margin:0;">
+              <p id="exposure-info">Adjust all three sliders to find the correct exposure.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Three sliders -->
+        <div class="stack">
+
+          <!-- Aperture slider -->
+          <div class="card">
+            <div class="row mb-2">
+              <span style="font-size:1.2rem;">⬡</span>
+              <h4>Aperture</h4>
+            </div>
+            <div class="slider-group">
+              <div class="slider-label-row">
+                <span class="slider-label text-sm">f-stop</span>
+                <span class="slider-value" id="exp-aperture-value">f/2.8</span>
+              </div>
+              <input type="range" class="slider" id="exp-aperture-slider"
+                min="0" max="8" step="1" value="2"
+                oninput="onExpApertureChange(this.value)"
+                aria-label="Combined aperture slider" />
+              <div class="slider-scale">
+                <span>f/1.4</span><span>f/22</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shutter speed slider -->
+          <div class="card">
+            <div class="row mb-2">
+              <span style="font-size:1.2rem;">⏱️</span>
+              <h4>Shutter Speed</h4>
+            </div>
+            <div class="slider-group">
+              <div class="slider-label-row">
+                <span class="slider-label text-sm">Speed</span>
+                <span class="slider-value" id="exp-shutter-value">1/250s</span>
+              </div>
+              <input type="range" class="slider" id="exp-shutter-slider"
+                min="0" max="8" step="1" value="4"
+                oninput="onExpShutterChange(this.value)"
+                aria-label="Combined shutter slider" />
+              <div class="slider-scale">
+                <span>1/4000s</span><span>1s</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ISO slider -->
+          <div class="card">
+            <div class="row mb-2">
+              <span style="font-size:1.2rem;">🌟</span>
+              <h4>ISO</h4>
+            </div>
+            <div class="slider-group">
+              <div class="slider-label-row">
+                <span class="slider-label text-sm">Sensitivity</span>
+                <span class="slider-value" id="exp-iso-value">ISO 100</span>
+              </div>
+              <input type="range" class="slider" id="exp-iso-slider"
+                min="0" max="6" step="1" value="0"
+                oninput="onExpISOChange(this.value)"
+                aria-label="Combined ISO slider" />
+              <div class="slider-scale">
+                <span>ISO 100</span><span>ISO 6400</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== MODULE NAVIGATION ===== -->
+  <div class="container">
+    <div class="module-nav">
+      <a href="module1.html">← Camera Basics</a>
+      <a href="module3.html">Lenses →</a>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <p>Learn Visual Photography · Built for curious beginners</p>
+    </div>
+  </footer>
+
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="../js/main.js"></script>
+  <script src="../js/simulators/scene-renderer.js"></script>
+  <script src="../js/simulators/exposure-simulator.js"></script>
+  <script>
+    // ---- Initialize all three simulators on page load ----
+    let apertureSimulator, shutterSimulator, isoSimulator, exposureSimulator;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      apertureSimulator = new ApertureSimulator('aperture-canvas', 'aperture-info', 'aperture-value', 'portrait');
+      shutterSimulator  = new ShutterSimulator('shutter-canvas', 'shutter-info', 'shutter-value', 'sports');
+      isoSimulator      = new ISOSimulator('iso-canvas', 'iso-info', 'iso-value', 'lowlight');
+      exposureSimulator = new ExposureTriangleSimulator('exposure-canvas', 'exposure-info', 'exposure-meter-needle', 'portrait');
+    });
+
+    // ---- Slider event handlers ----
+    function onApertureChange(val) {
+      apertureSimulator.render(parseInt(val));
+    }
+
+    function onShutterChange(val) {
+      shutterSimulator.render(parseInt(val));
+    }
+
+    function onISOChange(val) {
+      isoSimulator.render(parseInt(val));
+    }
+
+    // Combined triangle sliders
+    const apertureLabels = ['f/1.4','f/2','f/2.8','f/4','f/5.6','f/8','f/11','f/16','f/22'];
+    const shutterLabels  = ['1/4000s','1/2000s','1/1000s','1/500s','1/250s','1/125s','1/60s','1/30s','1s'];
+    const isoLabels      = ['ISO 100','ISO 200','ISO 400','ISO 800','ISO 1600','ISO 3200','ISO 6400'];
+
+    function onExpApertureChange(val) {
+      document.getElementById('exp-aperture-value').textContent = apertureLabels[val];
+      exposureSimulator.setAperture(parseInt(val));
+    }
+
+    function onExpShutterChange(val) {
+      document.getElementById('exp-shutter-value').textContent = shutterLabels[val];
+      exposureSimulator.setShutter(parseInt(val));
+    }
+
+    function onExpISOChange(val) {
+      document.getElementById('exp-iso-value').textContent = isoLabels[val];
+      exposureSimulator.setISO(parseInt(val));
+    }
+  </script>
+
+</body>
+</html>

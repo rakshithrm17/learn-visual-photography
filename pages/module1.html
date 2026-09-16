@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What is a Camera? | Learn Visual Photography</title>
+  <meta name="description" content="Learn how a camera works with animated light ray diagrams and a labeled cross-section of a DSLR camera." />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/animations.css" />
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">📷</div>VisualPhoto</a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="module1.html" class="active">Camera Basics</a></li>
+        <li><a href="module2.html">Exposure</a></li>
+        <li><a href="module3.html">Lenses</a></li>
+        <li><a href="module4.html">Camera Types</a></li>
+        <li><a href="module5.html">Camera Explorer</a></li>
+        <li><a href="module6.html">Composition</a></li>
+      </ul>
+      <button class="nav-hamburger" id="nav-hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="module-header">
+    <div class="container">
+      <div class="module-label">Module 1</div>
+      <h1>What is a Camera?</h1>
+      <p>A camera is a light-tight box with a lens at the front and a sensor (or film) at the back. The lens focuses light onto the sensor, and the sensor records it as an image. Simple as that.</p>
+    </div>
+  </div>
+
+
+  <!-- How a camera works -->
+  <section class="section">
+    <div class="container">
+
+      <div class="concept-card">
+        <!-- Visual: animated aperture iris as analogy for camera eye -->
+        <div class="concept-visual">
+          <div style="text-align:center;padding:32px;">
+            <div class="aperture-ring" style="width:120px;height:120px;margin:0 auto 16px;"></div>
+            <p class="text-sm text-muted" style="margin-top:16px;">The lens iris opening and closing</p>
+          </div>
+        </div>
+
+        <div class="concept-text">
+          <div class="subtitle">The Core Idea</div>
+          <h3>A Camera is Like Your Eye</h3>
+          <p>Your eye has a pupil that opens and closes to control how much light enters. A camera has an <strong>iris/aperture</strong> that does exactly the same thing.</p>
+          <p class="mt-2">Your retina records the image. A camera has a <strong>sensor</strong> that records the image electronically.</p>
+          <p class="mt-2">The difference is that with a camera, YOU control how much light enters and for how long.</p>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Camera cross-section diagram -->
+      <div class="reveal">
+        <h2 style="margin-bottom:24px;">Inside a Camera — The Main Parts</h2>
+
+        <!-- SVG cross-section diagram of DSLR -->
+        <div style="background:var(--bg-soft);border-radius:var(--radius-lg);padding:40px;overflow:auto;">
+          <svg viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%;">
+
+            <!-- Camera body -->
+            <rect x="200" y="80" width="380" height="240" rx="10" fill="#2d2d2d" />
+
+            <!-- Prism hump -->
+            <polygon points="310,80 390,80 380,50 320,50" fill="#1a1a1a" />
+
+            <!-- Viewfinder -->
+            <rect x="325" y="52" width="40" height="25" rx="3" fill="#333" />
+            <text x="345" y="68" text-anchor="middle" fill="#888" font-size="8" font-family="Inter">VF</text>
+
+            <!-- Mirror inside body -->
+            <line x1="250" y1="280" x2="380" y2="130" stroke="#aaa" stroke-width="3" />
+
+            <!-- Sensor on right side -->
+            <rect x="540" y="140" width="16" height="140" rx="3" fill="#4A9EFF" />
+            <text x="548" y="215" text-anchor="middle" fill="white" font-size="9" font-family="Inter" transform="rotate(-90,548,215)">SENSOR</text>
+
+            <!-- Shutter curtain -->
+            <rect x="510" y="140" width="10" height="140" rx="2" fill="#666" />
+            <text x="515" y="215" text-anchor="middle" fill="white" font-size="8" font-family="Inter" transform="rotate(-90,515,215)">SHUTTER</text>
+
+            <!-- Lens mount -->
+            <rect x="198" y="130" width="8" height="100" rx="2" fill="#888" />
+
+            <!-- Lens body -->
+            <rect x="60" y="150" width="142" height="60" rx="6" fill="#3a3a3a" />
+            <!-- Lens glass elements inside -->
+            <ellipse cx="90" cy="180" rx="18" ry="24" fill="#87CEEB" opacity="0.7" />
+            <ellipse cx="130" cy="180" rx="22" ry="28" fill="#B0D4E8" opacity="0.7" />
+            <ellipse cx="175" cy="180" rx="16" ry="22" fill="#87CEEB" opacity="0.7" />
+
+            <!-- Light rays -->
+            <line class="light-ray light-ray-1" x1="20" y1="120" x2="90" y2="180" stroke="#FFD700" stroke-width="2" stroke-dasharray="200" />
+            <line class="light-ray light-ray-2" x1="20" y1="180" x2="90" y2="180" stroke="#FFD700" stroke-width="2" stroke-dasharray="200" />
+            <line class="light-ray light-ray-3" x1="20" y1="240" x2="90" y2="180" stroke="#FFD700" stroke-width="2" stroke-dasharray="200" />
+
+            <!-- Rays through lens to sensor -->
+            <line class="light-ray light-ray-1" x1="190" y1="165" x2="548" y2="150" stroke="#FFD700" stroke-width="1.5" opacity="0.6" stroke-dasharray="200" />
+            <line class="light-ray light-ray-2" x1="190" y1="180" x2="548" y2="210" stroke="#FFD700" stroke-width="1.5" opacity="0.6" stroke-dasharray="200" />
+            <line class="light-ray light-ray-3" x1="190" y1="195" x2="548" y2="270" stroke="#FFD700" stroke-width="1.5" opacity="0.6" stroke-dasharray="200" />
+
+            <!-- Labels -->
+            <text x="90" y="225" text-anchor="middle" fill="#aaa" font-size="11" font-family="Inter">Lens</text>
+            <text x="210" y="305" text-anchor="middle" fill="#aaa" font-size="11" font-family="Inter">Mount</text>
+            <text x="340" y="310" text-anchor="middle" fill="#aaa" font-size="11" font-family="Inter">Mirror</text>
+            <text x="345" y="175" text-anchor="middle" fill="#ccc" font-size="10" font-family="Inter">Pentaprism</text>
+            <text x="30" y="110" text-anchor="start" fill="#FFD700" font-size="11" font-family="Inter" font-weight="600">Light</text>
+
+          </svg>
+        </div>
+      </div>
+
+      <!-- Parts explained -->
+      <div class="grid-3 mt-4 reveal">
+
+        <div class="card">
+          <div style="font-size:1.5rem;margin-bottom:8px;">🔭</div>
+          <h4 style="margin-bottom:6px;">The Lens</h4>
+          <p class="text-sm">Glass elements inside the lens bend and focus light onto the sensor. Different lenses change how much of the scene you capture.</p>
+        </div>
+
+        <div class="card">
+          <div style="font-size:1.5rem;margin-bottom:8px;">⬡</div>
+          <h4 style="margin-bottom:6px;">The Aperture (Iris)</h4>
+          <p class="text-sm">A set of overlapping blades inside the lens that open and close to control how much light passes through. You set the f-stop number.</p>
+        </div>
+
+        <div class="card">
+          <div style="font-size:1.5rem;margin-bottom:8px;">⚡</div>
+          <h4 style="margin-bottom:6px;">The Shutter</h4>
+          <p class="text-sm">A mechanical curtain in front of the sensor. It opens and closes very fast to control how long the sensor is exposed to light.</p>
+        </div>
+
+        <div class="card">
+          <div style="font-size:1.5rem;margin-bottom:8px;">💡</div>
+          <h4 style="margin-bottom:6px;">The Sensor</h4>
+          <p class="text-sm">A grid of millions of tiny light detectors (pixels). Each pixel records how much light hit it, creating the digital image file.</p>
+        </div>
+
+        <div class="card">
+          <div style="font-size:1.5rem;margin-bottom:8px;">🔲</div>
+          <h4 style="margin-bottom:6px;">The Viewfinder</h4>
+          <p class="text-sm">In DSLRs, a mirror reflects light up to the viewfinder so you see exactly what the lens sees before pressing the shutter.</p>
+        </div>
+
+        <div class="card">
+          <div style="font-size:1.5rem;margin-bottom:8px;">🌟</div>
+          <h4 style="margin-bottom:6px;">ISO / Sensitivity</h4>
+          <p class="text-sm">The sensor can be made more sensitive to light electronically. Higher ISO = brighter but noisier image. Lower ISO = cleaner but needs more light.</p>
+        </div>
+
+      </div>
+
+      <!-- Callout -->
+      <div class="callout callout-blue mt-4 reveal">
+        <div class="callout-icon">📚</div>
+        <div class="callout-body">
+          <strong>The Three Controls That Matter</strong>
+          <p>Every photo you take is controlled by three things: <strong>Aperture</strong> (iris size), <strong>Shutter Speed</strong> (exposure time), and <strong>ISO</strong> (sensor sensitivity). Together they're called the <strong>Exposure Triangle</strong> — and Module 2 teaches all three with live simulators.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="module-nav">
+      <a href="../index.html">← Home</a>
+      <a href="module2.html">Exposure Triangle →</a>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container"><p>Learn Visual Photography · Built for curious beginners</p></div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Camera Explorer — Pick a Camera & Lens | Learn Visual Photography</title>
+  <meta name="description" content="Select a real Canon, Nikon, Sony, Fujifilm, or Olympus camera. Choose a compatible lens. Click every button and understand what it does. See real-time capture simulation." />
+
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/animations.css" />
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="../index.html" class="nav-logo">
+        <div class="nav-logo-icon">📷</div>
+        VisualPhoto
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="module1.html">Camera Basics</a></li>
+        <li><a href="module2.html">Exposure</a></li>
+        <li><a href="module3.html">Lenses</a></li>
+        <li><a href="module4.html">Camera Types</a></li>
+        <li><a href="module5.html" class="active">Camera Explorer</a></li>
+        <li><a href="module6.html">Composition</a></li>
+      </ul>
+      <button class="nav-hamburger" id="nav-hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+
+  <!-- ===== MODULE HEADER ===== -->
+  <div class="module-header">
+    <div class="container">
+      <div class="module-label">Module 5 — Camera Explorer</div>
+      <h1>Pick a Real Camera & Explore It</h1>
+      <p>Choose a brand, select a camera model, attach a lens, then click every button on the camera body to learn what it does — and see the effect live on the capture simulator.</p>
+    </div>
+  </div>
+
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <section class="section-sm">
+    <div class="container">
+
+
+      <!-- ================================= -->
+      <!-- STEP 1: Brand Selection           -->
+      <!-- ================================= -->
+      <div style="margin-bottom:32px;">
+        <h3 style="margin-bottom:4px;">Step 1 — Choose a Brand</h3>
+        <p class="text-sm text-muted mb-3">Select a camera manufacturer to see their camera lineup.</p>
+
+        <!-- Brand tabs rendered by JS -->
+        <div class="brand-tabs" id="brand-tabs-container"></div>
+
+        <!-- Brand description (shown after selection) -->
+        <p id="brand-description" class="text-sm text-muted" style="display:none;margin-top:8px;padding:10px 14px;background:var(--bg-soft);border-radius:var(--radius-sm);"></p>
+      </div>
+
+
+      <!-- ================================= -->
+      <!-- STEP 2: Model Selection           -->
+      <!-- ================================= -->
+      <div id="model-section" style="display:none;margin-bottom:32px;">
+        <h3 style="margin-bottom:4px;">Step 2 — Choose a Camera Model</h3>
+        <p class="text-sm text-muted mb-3">Models from the past 20+ years, sorted by year.</p>
+
+        <!-- Grid of model cards -->
+        <div class="model-grid" id="model-grid"></div>
+
+        <!-- Selected model detail -->
+        <div id="camera-detail" style="display:none;margin-top:16px;" class="callout callout-blue"></div>
+      </div>
+
+
+      <!-- ================================= -->
+      <!-- STEP 3: Lens Selection            -->
+      <!-- ================================= -->
+      <div id="lens-section" style="display:none;margin-bottom:32px;">
+        <h3 style="margin-bottom:4px;">Step 3 — Choose a Lens</h3>
+        <p class="text-sm text-muted mb-3">
+          Lenses compatible with your selected camera's mount system.
+          <span id="mount-label" class="text-bold"></span>
+        </p>
+
+        <!-- Grid of lens cards -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;" id="lens-grid"></div>
+
+        <!-- Selected lens detail -->
+        <div id="lens-detail" style="display:none;margin-top:16px;" class="callout callout-blue"></div>
+      </div>
+
+
+      <!-- ================================= -->
+      <!-- STEP 4 + 5: Camera UI + Capture  -->
+      <!-- ================================= -->
+      <div id="camera-ui-section" style="display:none;">
+
+        <hr class="divider" />
+
+        <div class="grid-2" style="gap:40px;align-items:start;">
+
+          <!-- Left: Camera body UI -->
+          <div>
+            <h3 style="margin-bottom:4px;">Step 4 — Camera Controls</h3>
+            <p class="text-sm text-muted mb-3">Click any button or dial on the camera to learn what it does.</p>
+
+            <!-- Camera body diagram rendered by JS -->
+            <div id="camera-body-container" style="padding:20px 0;"></div>
+
+            <!-- Button explanation panel -->
+            <div id="button-info-panel" class="btn-info-panel mt-3"></div>
+          </div>
+
+          <!-- Right: Capture simulator -->
+          <div id="capture-section" style="display:none;">
+            <h3 style="margin-bottom:4px;">Step 5 — Capture Simulator</h3>
+            <p class="text-sm text-muted mb-3">Adjust settings below and see what your photo would look like.</p>
+
+            <!-- Scene selector -->
+            <div class="scene-tabs" style="padding:0;background:none;border:none;gap:8px;margin-bottom:16px;">
+              <button class="scene-tab active" data-scene="portrait">Portrait</button>
+              <button class="scene-tab" data-scene="landscape">Landscape</button>
+              <button class="scene-tab" data-scene="sports">Sports</button>
+              <button class="scene-tab" data-scene="lowlight">Low Light</button>
+            </div>
+
+            <!-- Simulator canvas -->
+            <div class="simulator">
+              <div class="simulator-canvas-area" style="height:260px;position:relative;">
+                <canvas id="capture-canvas" width="480" height="260" style="width:100%;height:100%;"></canvas>
+
+                <!-- White flash overlay for shutter press effect -->
+                <div id="shutter-flash" style="
+                  position:absolute;inset:0;background:white;opacity:0;
+                  pointer-events:none;transition:opacity 0.1s;border-radius:inherit;
+                "></div>
+              </div>
+
+              <!-- Exposure meter -->
+              <div style="padding:10px 16px;background:var(--bg-page);border-bottom:1px solid var(--border);">
+                <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Exposure Meter</div>
+                <div class="meter-track">
+                  <div class="meter-needle" id="capture-meter-needle"></div>
+                </div>
+                <div class="meter-labels">
+                  <span>◀ Under</span>
+                  <span>Correct</span>
+                  <span>Over ▶</span>
+                </div>
+              </div>
+
+              <!-- Sliders -->
+              <div class="simulator-controls">
+
+                <!-- Aperture -->
+                <div class="slider-group">
+                  <div class="slider-label-row">
+                    <span class="slider-label text-sm">⬡ Aperture</span>
+                    <span class="slider-value" id="cap-aperture-value">f/2.8</span>
+                  </div>
+                  <input type="range" class="slider" id="cap-aperture-slider"
+                    min="0" max="8" step="1" value="2" aria-label="Aperture" />
+                </div>
+
+                <!-- Shutter -->
+                <div class="slider-group">
+                  <div class="slider-label-row">
+                    <span class="slider-label text-sm">⏱️ Shutter Speed</span>
+                    <span class="slider-value" id="cap-shutter-value">1/250s</span>
+                  </div>
+                  <input type="range" class="slider" id="cap-shutter-slider"
+                    min="0" max="8" step="1" value="4" aria-label="Shutter speed" />
+                </div>
+
+                <!-- ISO -->
+                <div class="slider-group">
+                  <div class="slider-label-row">
+                    <span class="slider-label text-sm">🌟 ISO</span>
+                    <span class="slider-value" id="cap-iso-value">ISO 100</span>
+                  </div>
+                  <input type="range" class="slider" id="cap-iso-slider"
+                    min="0" max="6" step="1" value="0" aria-label="ISO" />
+                </div>
+
+                <!-- Info and capture button -->
+                <div class="simulator-info">
+                  <p id="capture-info">Adjust the sliders to change the exposure. Click Capture to freeze the result.</p>
+                </div>
+
+                <button class="btn btn-primary" id="capture-btn" style="align-self:flex-start;">
+                  📸 Capture Photo
+                </button>
+              </div>
+            </div>
+
+            <!-- Captured photo preview -->
+            <div style="margin-top:16px;" id="preview-container" style="display:none;">
+              <div style="font-size:0.8rem;font-weight:600;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em;">Last Capture</div>
+              <img id="capture-preview" src="" alt="Captured simulation"
+                style="display:none;width:100%;border-radius:var(--radius-md);border:1px solid var(--border);box-shadow:var(--shadow-md);" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- Empty state — before any brand is selected -->
+      <div id="empty-state" style="text-align:center;padding:64px 0;">
+        <div style="font-size:3rem;margin-bottom:16px;">👆</div>
+        <h3 style="margin-bottom:8px;">Choose a Camera Brand to Begin</h3>
+        <p class="text-muted">Select one of the 5 brands above to see their camera models.</p>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ===== MODULE NAVIGATION ===== -->
+  <div class="container">
+    <div class="module-nav">
+      <a href="module4.html">← Camera Types</a>
+      <a href="module6.html">Composition →</a>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <p>Learn Visual Photography · Built for curious beginners</p>
+    </div>
+  </footer>
+
+
+  <!-- ===== SCRIPTS ===== -->
+  <!-- Data files must load before explorer logic -->
+  <script src="../js/data/cameras.js"></script>
+  <script src="../js/data/lenses.js"></script>
+  <script src="../js/data/camera-buttons.js"></script>
+  <script src="../js/simulators/scene-renderer.js"></script>
+  <script src="../js/simulators/exposure-simulator.js"></script>
+  <script src="../js/explorer/camera-explorer.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize the Camera Explorer
+      initCameraExplorer();
+
+      // Hide empty state when brand is first selected
+      const brandTabsContainer = document.getElementById('brand-tabs-container');
+      brandTabsContainer.addEventListener('click', () => {
+        const emptyState = document.getElementById('empty-state');
+        if (emptyState) emptyState.style.display = 'none';
+      });
+    });
+  </script>
+
+</body>
+</html>

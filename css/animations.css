@@ -1,0 +1,287 @@
+/* ================================================
+   LEARN VISUAL PHOTOGRAPHY
+   animations.css — CSS Keyframe Animations
+   ================================================ */
+
+
+/* ================================================
+   PAGE LOAD ANIMATIONS
+   ================================================ */
+
+/* Fade in + slide up — used on hero text */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Simple fade in */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Slide in from left */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Scale up from center */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+/* ================================================
+   APERTURE IRIS ANIMATION (Hero + Module 1)
+   Simulates camera aperture blades opening/closing.
+   ================================================ */
+
+/* The container that clips the iris */
+.aperture-ring {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #111 30%, #333);
+  position: relative;
+  overflow: hidden;
+  animation: irisOpen 3s ease-in-out infinite alternate;
+  box-shadow: 0 0 0 8px #222, 0 0 0 12px #444;
+}
+
+/* The bright center glow */
+.aperture-ring::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  height: 50%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.9), rgba(200,220,255,0.4));
+  animation: irisGlow 3s ease-in-out infinite alternate;
+}
+
+/* Aperture iris open/close — changes the center hole size */
+@keyframes irisOpen {
+  from { box-shadow: 0 0 0 8px #222, 0 0 0 12px #444, inset 0 0 0 60px rgba(0,0,0,0.95); }
+  to   { box-shadow: 0 0 0 8px #222, 0 0 0 12px #444, inset 0 0 0 20px rgba(0,0,0,0.3); }
+}
+
+@keyframes irisGlow {
+  from { width: 20%; height: 20%; opacity: 0.4; }
+  to   { width: 70%; height: 70%; opacity: 1; }
+}
+
+
+/* ================================================
+   SHUTTER ANIMATION
+   Horizontal curtains open and close.
+   ================================================ */
+.shutter-visual {
+  width: 180px;
+  height: 120px;
+  background-color: #ddd;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+}
+
+.shutter-top,
+.shutter-bottom {
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(135deg, #555, #333);
+  transition: transform 0.4s ease;
+}
+
+.shutter-top    { top: 0; transform-origin: top; }
+.shutter-bottom { bottom: 0; transform-origin: bottom; }
+
+/* Open state — curtains retract */
+.shutter-visual.open .shutter-top    { transform: scaleY(0); }
+.shutter-visual.open .shutter-bottom { transform: scaleY(0); }
+
+/* Animate shutter opening on load */
+@keyframes shutterOpen {
+  0%   { transform: scaleY(1); }
+  40%  { transform: scaleY(0); }
+  60%  { transform: scaleY(0); }
+  100% { transform: scaleY(1); }
+}
+
+.shutter-top    { animation: shutterOpen 2.5s ease-in-out infinite; }
+.shutter-bottom { animation: shutterOpen 2.5s ease-in-out infinite; }
+
+
+/* ================================================
+   MOTION BLUR ANIMATION (Shutter module)
+   Streaks that show motion blur.
+   ================================================ */
+@keyframes motionBlurMove {
+  from { transform: translateX(-20px); opacity: 0.8; }
+  to   { transform: translateX(20px);  opacity: 0.2; }
+}
+
+.motion-blur-streak {
+  height: 3px;
+  background: linear-gradient(to right, transparent, var(--blue), transparent);
+  border-radius: var(--radius-full);
+  animation: motionBlurMove 0.8s ease-in-out infinite alternate;
+}
+
+
+/* ================================================
+   GRAIN / NOISE ANIMATION (ISO module)
+   ================================================ */
+@keyframes grainShift {
+  0%, 100% { transform: translate(0, 0); }
+  10%       { transform: translate(-1px, 1px); }
+  20%       { transform: translate(2px, -1px); }
+  30%       { transform: translate(-2px, 2px); }
+  40%       { transform: translate(1px, -2px); }
+  50%       { transform: translate(-1px, -1px); }
+  60%       { transform: translate(2px, 2px); }
+  70%       { transform: translate(-2px, -2px); }
+  80%       { transform: translate(1px, 1px); }
+  90%       { transform: translate(-1px, 2px); }
+}
+
+.noise-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0; /* controlled by JS */
+  animation: grainShift 0.12s steps(1) infinite;
+  border-radius: inherit;
+}
+
+
+/* ================================================
+   CARD ENTRANCE (used when module cards load)
+   ================================================ */
+.animate-fade-up {
+  animation: fadeUp 0.5s ease both;
+}
+
+/* Stagger delay for a sequence of cards */
+.animate-delay-1 { animation-delay: 0.05s; }
+.animate-delay-2 { animation-delay: 0.10s; }
+.animate-delay-3 { animation-delay: 0.15s; }
+.animate-delay-4 { animation-delay: 0.20s; }
+.animate-delay-5 { animation-delay: 0.25s; }
+.animate-delay-6 { animation-delay: 0.30s; }
+
+
+/* ================================================
+   PULSING RING (draw attention to interactive areas)
+   ================================================ */
+@keyframes pulseRing {
+  0%   { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.35); }
+  70%  { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+}
+
+.pulse { animation: pulseRing 2s ease-out infinite; }
+
+
+/* ================================================
+   LIGHT RAY ANIMATION (Module 1 — camera cross-section)
+   ================================================ */
+@keyframes rayTravel {
+  from { stroke-dashoffset: 200; opacity: 0; }
+  to   { stroke-dashoffset: 0;   opacity: 1; }
+}
+
+.light-ray {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  animation: rayTravel 1.5s ease forwards;
+}
+
+.light-ray-1 { animation-delay: 0s; }
+.light-ray-2 { animation-delay: 0.2s; }
+.light-ray-3 { animation-delay: 0.4s; }
+
+
+/* ================================================
+   TOOLTIP (shown on camera button hover)
+   ================================================ */
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--text-heading);
+  color: #fff;
+  font-size: 0.72rem;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--ease);
+  z-index: 10;
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--text-heading);
+}
+
+/* Show tooltip on parent hover */
+.has-tooltip:hover .tooltip { opacity: 1; }
+
+
+/* ================================================
+   FIELD OF VIEW TRANSITION (Lens simulator)
+   ================================================ */
+@keyframes fovChange {
+  from { clip-path: inset(0 30% 0 30%); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+
+.fov-animate { animation: fovChange 0.4s ease both; }
+
+
+/* ================================================
+   SCROLL-TRIGGERED REVEAL
+   Add class 'reveal' to elements; JS adds 'visible'.
+   ================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}

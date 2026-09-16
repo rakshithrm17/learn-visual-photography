@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lenses — Types and Focal Length | Learn Visual Photography</title>
+  <meta name="description" content="Understand lens types: prime, zoom, wide angle, telephoto, macro, fisheye. See how focal length changes the field of view interactively." />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/animations.css" />
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">📷</div>VisualPhoto</a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="module1.html">Camera Basics</a></li>
+        <li><a href="module2.html">Exposure</a></li>
+        <li><a href="module3.html" class="active">Lenses</a></li>
+        <li><a href="module4.html">Camera Types</a></li>
+        <li><a href="module5.html">Camera Explorer</a></li>
+        <li><a href="module6.html">Composition</a></li>
+      </ul>
+      <button class="nav-hamburger" id="nav-hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="module-header">
+    <div class="container">
+      <div class="module-label">Module 3</div>
+      <h1>Lenses</h1>
+      <p>A lens determines what angle of the world you capture and how blurry the background can get. Different lenses are designed for different purposes — portraits, sports, landscapes, close-ups.</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- Focal Length Explainer -->
+      <div class="reveal">
+        <h2 style="margin-bottom:12px;">What is Focal Length?</h2>
+        <p style="max-width:640px;">Focal length (measured in mm) tells you how "zoomed in" a lens is.
+          A <strong>short focal length (e.g. 14mm)</strong> sees a wide angle — like peripheral vision.
+          A <strong>long focal length (e.g. 200mm)</strong> sees a narrow angle — like binoculars.
+        </p>
+      </div>
+
+      <!-- FOV Simulator -->
+      <div class="simulator mt-4 reveal">
+        <div class="simulator-canvas-area" style="height:300px;">
+          <canvas id="fov-canvas" width="640" height="300" style="width:100%;height:100%;"></canvas>
+        </div>
+
+        <!-- Lens type selector -->
+        <div class="scene-tabs" style="gap:8px;">
+          <button class="scene-tab active" id="lens-tab-wide"     onclick="selectLensType('wide')">14mm Wide</button>
+          <button class="scene-tab"        id="lens-tab-standard" onclick="selectLensType('standard')">35mm Street</button>
+          <button class="scene-tab"        id="lens-tab-normal"   onclick="selectLensType('normal')">50mm Normal</button>
+          <button class="scene-tab"        id="lens-tab-portrait" onclick="selectLensType('portrait')">85mm Portrait</button>
+          <button class="scene-tab"        id="lens-tab-tele"     onclick="selectLensType('tele')">200mm Tele</button>
+        </div>
+
+        <div class="simulator-controls">
+          <div class="simulator-info">
+            <p id="fov-info">Select a lens type above to see how it changes the field of view.</p>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Lens Types Grid -->
+      <h2 class="reveal" style="margin-bottom:24px;">Types of Lenses</h2>
+
+      <div class="stack reveal">
+
+        <!-- Prime Lens -->
+        <div class="card">
+          <div class="grid-2" style="gap:24px;align-items:start;">
+            <div>
+              <div class="row mb-2">
+                <span class="badge badge-blue">Prime Lens</span>
+                <span class="badge badge-gray">Fixed Focal Length</span>
+              </div>
+              <h3 style="margin-bottom:8px;">Prime Lens (e.g. 50mm, 85mm)</h3>
+              <p>A prime lens has a <strong>fixed focal length</strong> — it cannot zoom in or out. You zoom with your feet by moving closer or farther.</p>
+              <p class="mt-2"><strong>Why use it?</strong> Primes are sharper, lighter, cheaper, and have wider maximum apertures (like f/1.4 or f/1.8). This means better low-light performance and more background blur.</p>
+              <p class="mt-2 text-sm text-muted"><strong>Best for:</strong> Portraits, street photography, low-light, everyday carry.</p>
+            </div>
+            <div style="background:var(--bg-soft);border-radius:var(--radius-md);padding:24px;text-align:center;">
+              <div style="font-size:3rem;margin-bottom:8px;">🎭</div>
+              <div style="font-weight:700;font-size:1.2rem;color:var(--blue);">50mm f/1.8</div>
+              <div class="text-sm text-muted mt-1">Classic portrait lens</div>
+              <div class="mt-2 text-xs text-muted">Background blur ●●●●○</div>
+              <div class="text-xs text-muted">Field of view: 47°</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zoom Lens -->
+        <div class="card">
+          <div class="grid-2" style="gap:24px;align-items:start;">
+            <div>
+              <div class="row mb-2">
+                <span class="badge badge-blue">Zoom Lens</span>
+                <span class="badge badge-gray">Variable Focal Length</span>
+              </div>
+              <h3 style="margin-bottom:8px;">Zoom Lens (e.g. 24-70mm, 18-55mm)</h3>
+              <p>A zoom lens covers <strong>a range of focal lengths</strong>. You can go from wide to telephoto without changing the lens by rotating the zoom ring.</p>
+              <p class="mt-2"><strong>Trade-off:</strong> More convenient, but typically not as sharp as primes at the same price. Maximum aperture is usually narrower (f/3.5-5.6 for kit lenses).</p>
+              <p class="mt-2 text-sm text-muted"><strong>Best for:</strong> Travel, events, general photography where you need flexibility.</p>
+            </div>
+            <div style="background:var(--bg-soft);border-radius:var(--radius-md);padding:24px;text-align:center;">
+              <div style="font-size:3rem;margin-bottom:8px;">✈️</div>
+              <div style="font-weight:700;font-size:1.2rem;color:var(--blue);">24-70mm f/2.8</div>
+              <div class="text-sm text-muted mt-1">Professional travel zoom</div>
+              <div class="mt-2 text-xs text-muted">Background blur ●●○○○</div>
+              <div class="text-xs text-muted">Field of view: 84° – 34°</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wide Angle -->
+        <div class="card">
+          <div class="grid-2" style="gap:24px;align-items:start;">
+            <div>
+              <div class="row mb-2">
+                <span class="badge badge-blue">Wide Angle</span>
+                <span class="badge badge-gray">Under 35mm</span>
+              </div>
+              <h3 style="margin-bottom:8px;">Wide Angle Lens (e.g. 14mm, 24mm)</h3>
+              <p>Captures a <strong>very wide field of view</strong> — much wider than the human eye sees. Everything looks more dramatic and spacious.</p>
+              <p class="mt-2"><strong>Characteristic:</strong> Objects close to the lens appear large, objects far away appear small. Creates strong perspective distortion.</p>
+              <p class="mt-2 text-sm text-muted"><strong>Best for:</strong> Landscape photography, architecture, interiors, astrophotography, environmental portraits.</p>
+            </div>
+            <div style="background:var(--bg-soft);border-radius:var(--radius-md);padding:24px;text-align:center;">
+              <div style="font-size:3rem;margin-bottom:8px;">🏔️</div>
+              <div style="font-weight:700;font-size:1.2rem;color:var(--blue);">16mm f/2.8</div>
+              <div class="text-sm text-muted mt-1">Ultra-wide landscape lens</div>
+              <div class="mt-2 text-xs text-muted">Background blur ●○○○○</div>
+              <div class="text-xs text-muted">Field of view: 107°</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Telephoto -->
+        <div class="card">
+          <div class="grid-2" style="gap:24px;align-items:start;">
+            <div>
+              <div class="row mb-2">
+                <span class="badge badge-blue">Telephoto</span>
+                <span class="badge badge-gray">85mm and above</span>
+              </div>
+              <h3 style="margin-bottom:8px;">Telephoto Lens (e.g. 70-200mm, 400mm)</h3>
+              <p>Reaches far subjects that you physically cannot get close to. <strong>Compresses perspective</strong> — background elements appear much closer to the subject than they really are.</p>
+              <p class="mt-2"><strong>Characteristic:</strong> Beautiful subject separation at longer focal lengths. Background blur is strong even at f/4 or f/5.6.</p>
+              <p class="mt-2 text-sm text-muted"><strong>Best for:</strong> Sports, wildlife, birds in flight, candid street photography, concerts.</p>
+            </div>
+            <div style="background:var(--bg-soft);border-radius:var(--radius-md);padding:24px;text-align:center;">
+              <div style="font-size:3rem;margin-bottom:8px;">🦁</div>
+              <div style="font-weight:700;font-size:1.2rem;color:var(--blue);">70-200mm f/2.8</div>
+              <div class="text-sm text-muted mt-1">Sports & wildlife zoom</div>
+              <div class="mt-2 text-xs text-muted">Background blur ●●●●○</div>
+              <div class="text-xs text-muted">Field of view: 12° – 34°</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Macro -->
+        <div class="card">
+          <div class="grid-2" style="gap:24px;align-items:start;">
+            <div>
+              <div class="row mb-2">
+                <span class="badge badge-blue">Macro</span>
+                <span class="badge badge-gray">1:1 Life-Size</span>
+              </div>
+              <h3 style="margin-bottom:8px;">Macro Lens (e.g. 60mm, 100mm)</h3>
+              <p>Designed for <strong>extreme close-up photography</strong>. A true macro lens can focus close enough that the subject appears at 1:1 life-size on the sensor.</p>
+              <p class="mt-2"><strong>What that means:</strong> A 10mm insect fills the entire frame. A coin appears massive. Details invisible to the naked eye become clear photographs.</p>
+              <p class="mt-2 text-sm text-muted"><strong>Best for:</strong> Insects, flowers, jewellery, food, stamps, small products.</p>
+            </div>
+            <div style="background:var(--bg-soft);border-radius:var(--radius-md);padding:24px;text-align:center;">
+              <div style="font-size:3rem;margin-bottom:8px;">🌸</div>
+              <div style="font-weight:700;font-size:1.2rem;color:var(--blue);">100mm f/2.8 Macro</div>
+              <div class="text-sm text-muted mt-1">Extreme close-up lens</div>
+              <div class="mt-2 text-xs text-muted">Magnification: 1:1</div>
+              <div class="text-xs text-muted">Minimum focus: 30cm</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fisheye -->
+        <div class="card">
+          <div class="grid-2" style="gap:24px;align-items:start;">
+            <div>
+              <div class="row mb-2">
+                <span class="badge badge-amber">Fisheye</span>
+                <span class="badge badge-gray">Creative / Specialty</span>
+              </div>
+              <h3 style="margin-bottom:8px;">Fisheye Lens (e.g. 8mm, 15mm)</h3>
+              <p>An ultra-wide lens that intentionally <strong>creates strong barrel distortion</strong> — straight lines curve dramatically, and the image has a distinctive circular/bubble look.</p>
+              <p class="mt-2"><strong>Used for:</strong> Creative artistic shots, skateboarding photography, action sports, 180° panoramas, surreal architectural shots.</p>
+              <p class="mt-2 text-sm text-muted"><strong>Best for:</strong> Creative photography, action sports, music videos, artistic expression.</p>
+            </div>
+            <div style="background:var(--bg-soft);border-radius:var(--radius-md);padding:24px;text-align:center;">
+              <div style="font-size:3rem;margin-bottom:8px;">🌐</div>
+              <div style="font-weight:700;font-size:1.2rem;color:var(--blue);">8mm f/3.5 Fisheye</div>
+              <div class="text-sm text-muted mt-1">180° creative lens</div>
+              <div class="mt-2 text-xs text-muted">Field of view: 180°</div>
+              <div class="text-xs text-muted">Barrel distortion: High</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="module-nav">
+      <a href="module2.html">← Exposure Triangle</a>
+      <a href="module4.html">Camera Types →</a>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container"><p>Learn Visual Photography · Built for curious beginners</p></div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/simulators/scene-renderer.js"></script>
+  <script>
+    // ---- Lens FOV Simulator ----
+    // Shows how different focal lengths change the field of view on the same scene.
+
+    const canvas  = document.getElementById('fov-canvas');
+    const ctx     = canvas.getContext('2d');
+    const infoEl  = document.getElementById('fov-info');
+    const palette = SCENE_PALETTES.landscape;
+
+    // Focal length data: zoom factor = how much to zoom the scene (simulate crop)
+    const LENS_TYPES = {
+      wide: {
+        focal:   '14mm',
+        fov:     '107°',
+        zoom:    1.0,     // no zoom = wide view
+        label:   'Wide Angle — 14mm',
+        description: '<strong>14mm Wide Angle:</strong> Extremely wide field of view. You see far more than the human eye. Perfect for dramatic landscapes and fitting large buildings in frame.'
+      },
+      standard: {
+        focal:   '35mm',
+        fov:     '63°',
+        zoom:    1.5,
+        label:   'Street — 35mm',
+        description: '<strong>35mm Street Lens:</strong> Close to natural human vision. No dramatic distortion. Great for street photography and environmental portraits where you want to show context.'
+      },
+      normal: {
+        focal:   '50mm',
+        fov:     '47°',
+        zoom:    2.0,
+        label:   'Normal — 50mm',
+        description: '<strong>50mm Normal Lens:</strong> Closest to how the human eye sees the world. What you see through the viewfinder matches what you see with your own eye naturally.'
+      },
+      portrait: {
+        focal:   '85mm',
+        fov:     '29°',
+        zoom:    3.2,
+        label:   'Portrait — 85mm',
+        description: '<strong>85mm Portrait Lens:</strong> Narrower field of view compresses perspective. Background appears closer to the subject. This "compression" is very flattering for portraits.'
+      },
+      tele: {
+        focal:   '200mm',
+        fov:     '12°',
+        zoom:    7.5,
+        label:   'Telephoto — 200mm',
+        description: '<strong>200mm Telephoto:</strong> Very narrow field of view. Like looking through binoculars. Reach subjects far away. Strong background compression — background fills the frame.'
+      }
+    };
+
+    let currentLens = 'wide';
+
+    function selectLensType(lensKey) {
+      currentLens = lensKey;
+
+      // Update tab active state
+      Object.keys(LENS_TYPES).forEach(key => {
+        const tab = document.getElementById(`lens-tab-${key}`);
+        if (tab) tab.classList.toggle('active', key === lensKey);
+      });
+
+      renderFOV(lensKey);
+    }
+
+    function renderFOV(lensKey) {
+      const lensData = LENS_TYPES[lensKey];
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Draw the scene zoomed/cropped based on focal length
+      // Higher zoom = we draw the scene scaled up (simulating telephoto compression)
+      const zoom = lensData.zoom;
+
+      ctx.save();
+      ctx.translate(w / 2, h / 2);
+      ctx.scale(zoom, zoom);
+      ctx.translate(-w / 2, -h / 2);
+
+      drawBackground(ctx, w, h, palette);
+      drawSubject(ctx, w / 2, h * 0.88, h * 0.1, palette);
+
+      ctx.restore();
+
+      // Draw FOV crop indicator borders (lines showing narrowing of view)
+      if (zoom > 1) {
+        const cropX = (w / 2) * (1 - 1 / zoom);
+        const cropY = (h / 2) * (1 - 1 / zoom);
+
+        ctx.strokeStyle = 'rgba(37, 99, 235, 0.6)';
+        ctx.lineWidth   = 2;
+        ctx.setLineDash([6, 4]);
+        ctx.strokeRect(cropX, cropY, w - cropX * 2, h - cropY * 2);
+        ctx.setLineDash([]);
+      }
+
+      // Focal length label on canvas
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      ctx.fillRect(0, 0, 150, 36);
+      ctx.fillStyle = '#fff';
+      ctx.font      = 'bold 14px Inter, sans-serif';
+      ctx.fillText(`${lensData.focal} · ${lensData.fov} FOV`, 10, 22);
+
+      infoEl.innerHTML = lensData.description;
+    }
+
+    // Initial render
+    document.addEventListener('DOMContentLoaded', () => renderFOV('wide'));
+  </script>
+</body>
+</html>
