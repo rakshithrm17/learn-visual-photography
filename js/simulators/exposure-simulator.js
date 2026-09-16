@@ -1,11 +1,11 @@
 // ================================================
 // LEARN VISUAL PHOTOGRAPHY
-// exposure-simulator.js
+// exposure-simulator.js (DOM/CSS Based)
 //
-// Powers ALL three exposure simulators:
-//   - Aperture (Depth of Field)
-//   - Shutter Speed (Motion Blur)
-//   - ISO (Noise & Brightness)
+// Powers ALL three exposure simulators using clean CSS layers:
+//   - Aperture: CSS Blur + Radial Mask
+//   - Shutter Speed: CSS Rotation Animation + SVG filter/CSS Blur
+//   - ISO: SVG Noise overlay + Opacity
 // And the combined Exposure Triangle simulator.
 // ================================================
 
@@ -15,50 +15,37 @@
 // ================================================
 class ApertureSimulator {
 
-  constructor(canvasId, infoId, valueId, scene = 'portrait') {
-    this.canvas  = document.getElementById(canvasId);
-    this.ctx     = this.canvas.getContext('2d');
+  constructor(containerId, infoId, valueId, scene = 'portrait') {
+    this.container = document.getElementById(containerId);
+    if (!this.container) return;
+    
+    // In module2.html, the container is the parent .sim-container
+    // The blur layer is inside it.
+    this.blurLayer = this.container.querySelector('.sim-bg-blur');
+    
     this.infoEl  = document.getElementById(infoId);
     this.valueEl = document.getElementById(valueId);
-    this.scene   = scene;
 
     this.fStops = ['f/1.4', 'f/2', 'f/2.8', 'f/4', 'f/5.6', 'f/8', 'f/11', 'f/16', 'f/22'];
-    this.currentSlider = 2; // f/2.8
-
-    window.addEventListener('scene-assets-loaded', () => this.render(this.currentSlider));
-    this.render(this.currentSlider); 
+    this.render(2); // start at f/2.8
   }
 
   render(sliderValue) {
-    this.currentSlider = sliderValue;
+    if (!this.blurLayer) return;
     const fStopLabel = this.fStops[sliderValue];
     const blurAmount = this.getBlurAmount(sliderValue);
 
     this.valueEl.textContent = fStopLabel;
-    this.drawWithBlur(blurAmount);
+    
+    // Apply blur to the top layer
+    this.blurLayer.style.filter = `blur(${blurAmount}px)`;
+    
     this.updateInfo(fStopLabel, sliderValue);
   }
 
   getBlurAmount(sliderIndex) {
-    const maxBlur = 18;
+    const maxBlur = 15;
     return maxBlur - (sliderIndex / 8) * maxBlur;
-  }
-
-  drawWithBlur(blurPx) {
-    const { canvas, ctx } = this;
-    const w = canvas.width;
-    const h = canvas.height;
-
-    ctx.clearRect(0, 0, w, h);
-
-    if (blurPx > 0) {
-      ctx.save();
-      ctx.filter = `blur(${blurPx.toFixed(1)}px)`;
-    }
-    drawBackground(ctx, w, h, this.scene);
-    if (blurPx > 0) ctx.restore();
-
-    drawSubject(ctx, w, h, this.scene);
   }
 
   updateInfo(fStopLabel, sliderIndex) {
@@ -73,7 +60,7 @@ class ApertureSimulator {
       `<strong>${fStopLabel} — Very Narrow:</strong> Maximum sharpness front to back. Used for product shots on tripod.`,
       `<strong>${fStopLabel} — Minimum Aperture:</strong> Everything sharp from close to horizon. Used for landscape with foreground detail.`
     ];
-    this.infoEl.innerHTML = descriptions[sliderIndex] || descriptions[4];
+    if(this.infoEl) this.infoEl.innerHTML = descriptions[sliderIndex] || descriptions[4];
   }
 }
 
@@ -83,12 +70,13 @@ class ApertureSimulator {
 // ================================================
 class ShutterSimulator {
 
-  constructor(canvasId, infoId, valueId, scene = 'sports') {
-    this.canvas  = document.getElementById(canvasId);
-    this.ctx     = this.canvas.getContext('2d');
+  constructor(containerId, infoId, valueId, scene = 'sports') {
+    this.container = document.getElementById(containerId);
+    if (!this.container) return;
+    
+    this.pinwheel = this.container.querySelector('.sim-pinwheel');
     this.infoEl  = document.getElementById(infoId);
     this.valueEl = document.getElementById(valueId);
-    this.scene   = scene;
 
     this.speeds = [
       '1/4000s', '1/2000s', '1/1000s', '1/500s',
@@ -98,31 +86,26 @@ class ShutterSimulator {
     ];
 
     this.animationFrame = null;
-    this.subjectX = -50; 
-    this.currentSlider = 4;
+    this.rotation = 0;
     this.currentBlur = 0;
 
-    window.addEventListener('scene-assets-loaded', () => this.drawCurrentFrame());
     this.startAnimation();
-    this.render(this.currentSlider);
+    this.render(4); // start at 1/250s
   }
 
   startAnimation() {
     let lastTime = 0;
     const animate = (time) => {
-      // Use time to keep consistent speed regardless of framerate
       const dt = lastTime ? (time - lastTime) : 16;
       lastTime = time;
       
-      // Move subject horizontally
-      this.subjectX += (100 * (dt / 1000)); // pixels per second
+      // Pinwheel rotates at a constant speed (e.g. 720 deg/sec)
+      this.rotation = (this.rotation + 720 * (dt / 1000)) % 360;
       
-      // Loop around
-      if (this.subjectX > this.canvas.width * 0.4) {
-        this.subjectX = -this.canvas.width * 0.4;
+      if (this.pinwheel) {
+        this.pinwheel.style.transform = `rotate(${this.rotation}deg)`;
       }
       
-      this.drawCurrentFrame();
       this.animationFrame = requestAnimationFrame(animate);
     };
     this.animationFrame = requestAnimationFrame(animate);
@@ -133,35 +116,26 @@ class ShutterSimulator {
   }
 
   render(sliderValue) {
-    this.currentSlider = sliderValue;
+    if (!this.pinwheel) return;
     const speedLabel  = this.speeds[sliderValue];
     const blurAmount  = this.getMotionBlur(sliderValue);
 
     this.valueEl.textContent = speedLabel;
-    this.currentBlur = blurAmount;
-    this.updateInfo(speedLabel, sliderValue);
-  }
-
-  drawCurrentFrame() {
-    const { canvas, ctx } = this;
-    const w = canvas.width;
-    const h = canvas.height;
-
-    ctx.clearRect(0, 0, w, h);
-    drawBackground(ctx, w, h, this.scene);
     
-    // Pass the offset and blur
-    drawSubject(ctx, w, h, this.scene, this.currentBlur, this.subjectX);
+    // Apply blur to simulate motion blur on the spinning object
+    this.pinwheel.style.filter = `blur(${blurAmount}px)`;
+    
+    this.updateInfo(speedLabel, sliderValue);
   }
 
   getMotionBlur(sliderIndex) {
     if (sliderIndex <= 4)  return 0;           // 1/4000s to 1/250s — frozen
-    if (sliderIndex === 5) return 0.2;         // 1/125s — tiny blur
-    if (sliderIndex === 6) return 0.5;         // 1/60s — noticeable
-    if (sliderIndex === 7) return 1.0;         // 1/30s — clear blur
-    if (sliderIndex === 8) return 1.6;          // 1/15s — strong
-    if (sliderIndex === 9) return 2.2;          // 1/8s
-    return 2.2 + (sliderIndex - 9) * 0.8;      // 1/4s and slower
+    if (sliderIndex === 5) return 0.5;         // 1/125s — tiny blur
+    if (sliderIndex === 6) return 1.5;         // 1/60s — noticeable
+    if (sliderIndex === 7) return 3.0;         // 1/30s — clear blur
+    if (sliderIndex === 8) return 5.0;          // 1/15s — strong
+    if (sliderIndex === 9) return 8.0;          // 1/8s
+    return 8.0 + (sliderIndex - 9) * 4.0;      // 1/4s and slower
   }
 
   updateInfo(speedLabel, sliderIndex) {
@@ -177,7 +151,7 @@ class ShutterSimulator {
     } else {
       message = `<strong>${speedLabel} — Very Slow:</strong> Heavy motion blur. Long exposure photography. Tripod essential. Used for silky waterfalls, light trails, and star tracks.`;
     }
-    this.infoEl.innerHTML = message;
+    if(this.infoEl) this.infoEl.innerHTML = message;
   }
 }
 
@@ -187,42 +161,45 @@ class ShutterSimulator {
 // ================================================
 class ISOSimulator {
 
-  constructor(canvasId, infoId, valueId, scene = 'lowlight') {
-    this.canvas  = document.getElementById(canvasId);
-    this.ctx     = this.canvas.getContext('2d');
+  constructor(containerId, infoId, valueId, scene = 'lowlight') {
+    this.container = document.getElementById(containerId);
+    if (!this.container) return;
+    
+    this.noiseLayer = this.container.querySelector('.sim-noise');
+    this.brightnessLayer = this.container.querySelector('.sim-brightness');
+    
     this.infoEl  = document.getElementById(infoId);
     this.valueEl = document.getElementById(valueId);
-    this.scene   = scene;
 
     this.isoValues = [100, 200, 400, 800, 1600, 3200, 6400];
-    this.currentSlider = 0;
-
-    window.addEventListener('scene-assets-loaded', () => this.render(this.currentSlider));
-    this.render(this.currentSlider);
+    this.render(0); // start at ISO 100
   }
 
   render(sliderIndex) {
-    this.currentSlider = sliderIndex;
     const isoValue    = this.isoValues[sliderIndex];
     const brightness  = this.getBrightness(sliderIndex);
     const noiseAmount = this.getNoiseAmount(sliderIndex);
 
     this.valueEl.textContent = `ISO ${isoValue}`;
-    this.draw(brightness, noiseAmount);
+    
+    if (this.brightnessLayer) {
+        // Brightness multiplier > 1 means white overlay with opacity
+        if (brightness > 1) {
+            this.brightnessLayer.style.backgroundColor = 'white';
+            // Map 1.0 - 2.4 to opacity 0.0 - 0.4
+            this.brightnessLayer.style.opacity = (brightness - 1.0) / 3.5;
+        } else {
+            this.brightnessLayer.style.backgroundColor = 'black';
+            // Map 0.85 - 1.0 to opacity 0.15 - 0.0
+            this.brightnessLayer.style.opacity = 1.0 - brightness;
+        }
+    }
+    
+    if (this.noiseLayer) {
+        this.noiseLayer.style.opacity = noiseAmount;
+    }
+    
     this.updateInfo(isoValue, sliderIndex);
-  }
-
-  draw(brightness, noiseAmount) {
-    const { canvas, ctx } = this;
-    const w = canvas.width;
-    const h = canvas.height;
-
-    ctx.clearRect(0, 0, w, h);
-    drawBackground(ctx, w, h, this.scene);
-    drawSubject(ctx, w, h, this.scene);
-
-    if (brightness !== 1) applyBrightness(ctx, w, h, brightness);
-    if (noiseAmount > 0) applyNoise(ctx, w, h, noiseAmount);
   }
 
   getBrightness(sliderIndex) {
@@ -231,7 +208,7 @@ class ISOSimulator {
   }
 
   getNoiseAmount(sliderIndex) {
-    const noiseLevels = [0, 0.04, 0.10, 0.20, 0.38, 0.58, 0.80];
+    const noiseLevels = [0, 0.08, 0.18, 0.35, 0.55, 0.75, 0.95];
     return noiseLevels[sliderIndex] || 0;
   }
 
@@ -245,7 +222,7 @@ class ISOSimulator {
       `<strong>ISO ${isoValue} — Very High:</strong> Clear grain/noise visible. Use only when you need a usable shot over a perfect one.`,
       `<strong>ISO ${isoValue} — Maximum ISO:</strong> Heavy noise. Colors may shift. Use only in extreme darkness. Grain becomes part of the aesthetic.`
     ];
-    this.infoEl.innerHTML = descriptions[sliderIndex] || descriptions[0];
+    if (this.infoEl) this.infoEl.innerHTML = descriptions[sliderIndex] || descriptions[0];
   }
 }
 
@@ -255,9 +232,16 @@ class ISOSimulator {
 // ================================================
 class ExposureTriangleSimulator {
 
-  constructor(canvasId, infoId, meterId, scene = 'portrait') {
-    this.canvas   = document.getElementById(canvasId);
-    this.ctx      = this.canvas.getContext('2d');
+  constructor(containerId, infoId, meterId, scene = 'portrait') {
+    this.container = document.getElementById(containerId);
+    if (!this.container) return;
+    
+    this.blurLayer = this.container.querySelector('.sim-bg-blur');
+    this.noiseLayer = this.container.querySelector('.sim-noise');
+    this.brightnessLayer = this.container.querySelector('.sim-brightness');
+    this.pinwheelContainer = this.container.querySelector('.sim-pinwheel-container');
+    this.pinwheel = this.container.querySelector('.sim-pinwheel');
+    
     this.infoEl   = document.getElementById(infoId);
     this.meterEl  = document.getElementById(meterId);
     this.scene    = scene;
@@ -268,8 +252,51 @@ class ExposureTriangleSimulator {
     this.speeds  = ['1/4000s','1/2000s','1/1000s','1/500s','1/250s','1/125s','1/60s','1/30s','1s'];
     this.isoVals = [100, 200, 400, 800, 1600, 3200, 6400];
 
-    window.addEventListener('scene-assets-loaded', () => this.render());
+    this.animationFrame = null;
+    this.rotation = 0;
+    
+    this.setScene(scene);
+    this.startAnimation();
     this.render();
+  }
+  
+  setScene(scene) {
+      this.scene = scene;
+      const imgLayer = this.container.querySelector('#exp-image') || this.container.querySelector('#cap-image');
+      const blurLyr = this.container.querySelector('#exp-blur-layer') || this.container.querySelector('#cap-blur-layer');
+      
+      let bgUrl = '';
+      if (scene === 'portrait') bgUrl = 'url("../assets/images/sim_portrait.jpg")';
+      else if (scene === 'lowlight') bgUrl = 'url("../assets/images/sim_lowlight.jpg")';
+      else if (scene === 'sports') bgUrl = ''; // transparent for pinwheel
+      else bgUrl = 'url("../assets/images/sim_portrait.jpg")'; // landscape fallback
+      
+      if (imgLayer) imgLayer.style.backgroundImage = bgUrl;
+      if (blurLyr) blurLyr.style.backgroundImage = bgUrl;
+      
+      if (this.pinwheelContainer) {
+          this.pinwheelContainer.style.display = (scene === 'sports') ? 'block' : 'none';
+      }
+      
+      if (scene === 'sports') {
+          if (imgLayer) imgLayer.style.backgroundColor = '#e0f2fe';
+      } else {
+          if (imgLayer) imgLayer.style.backgroundColor = 'transparent';
+      }
+  }
+  
+  startAnimation() {
+    let lastTime = 0;
+    const animate = (time) => {
+      const dt = lastTime ? (time - lastTime) : 16;
+      lastTime = time;
+      this.rotation = (this.rotation + 720 * (dt / 1000)) % 360;
+      if (this.pinwheel && this.scene === 'sports') {
+        this.pinwheel.style.transform = `rotate(${this.rotation}deg)`;
+      }
+      this.animationFrame = requestAnimationFrame(animate);
+    };
+    this.animationFrame = requestAnimationFrame(animate);
   }
 
   setAperture(index)  { this.settings.aperture = index; this.render(); }
@@ -278,34 +305,50 @@ class ExposureTriangleSimulator {
 
   render() {
     const { aperture, shutter, iso } = this.settings;
-    const { canvas, ctx } = this;
-    const w = canvas.width;
-    const h = canvas.height;
-
-    ctx.clearRect(0, 0, w, h);
 
     const blurAmount   = this.getApertureBlur(aperture);
+    const motionBlur   = this.getMotionBlur(shutter);
     const brightness   = this.getCombinedBrightness(aperture, shutter, iso);
     const noiseAmount  = this.getNoiseAmount(iso);
 
-    if (blurAmount > 0) {
-      ctx.save();
-      ctx.filter = `blur(${blurAmount.toFixed(1)}px)`;
+    if (this.blurLayer) {
+        this.blurLayer.style.filter = `blur(${blurAmount}px)`;
     }
-    drawBackground(ctx, w, h, this.scene);
-    if (blurAmount > 0) ctx.restore();
-
-    drawSubject(ctx, w, h, this.scene);
-
-    if (brightness !== 1) applyBrightness(ctx, w, h, brightness);
-    if (noiseAmount > 0) applyNoise(ctx, w, h, noiseAmount);
+    
+    if (this.pinwheel) {
+        this.pinwheel.style.filter = `blur(${motionBlur}px)`;
+    }
+    
+    if (this.brightnessLayer) {
+        if (brightness > 1) {
+            this.brightnessLayer.style.backgroundColor = 'white';
+            this.brightnessLayer.style.opacity = Math.min(1, (brightness - 1.0) / 2.0);
+        } else {
+            this.brightnessLayer.style.backgroundColor = 'black';
+            this.brightnessLayer.style.opacity = Math.min(1, 1.0 - brightness);
+        }
+    }
+    
+    if (this.noiseLayer) {
+        this.noiseLayer.style.opacity = noiseAmount;
+    }
 
     this.updateMeter(aperture, shutter, iso);
     this.updateInfo(aperture, shutter, iso);
   }
 
   getApertureBlur(apertureIndex) {
-    return 18 - (apertureIndex / 8) * 18;
+    return 15 - (apertureIndex / 8) * 15;
+  }
+  
+  getMotionBlur(sliderIndex) {
+    if (sliderIndex <= 4)  return 0;           
+    if (sliderIndex === 5) return 0.5;         
+    if (sliderIndex === 6) return 1.5;         
+    if (sliderIndex === 7) return 3.0;         
+    if (sliderIndex === 8) return 5.0;          
+    if (sliderIndex === 9) return 8.0;          
+    return 8.0 + (sliderIndex - 9) * 4.0;      
   }
 
   getCombinedBrightness(apertureIndex, shutterIndex, isoIndex) {
@@ -316,7 +359,7 @@ class ExposureTriangleSimulator {
   }
 
   getNoiseAmount(isoIndex) {
-    return [0, 0.04, 0.10, 0.20, 0.38, 0.58, 0.80][isoIndex] || 0;
+    return [0, 0.08, 0.18, 0.35, 0.55, 0.75, 0.95][isoIndex] || 0;
   }
 
   getExposureLevel(apertureIndex, shutterIndex, isoIndex) {
@@ -350,11 +393,13 @@ class ExposureTriangleSimulator {
     else if (ev <= 2)  exposureStatus = '🟡 Overexposed — image will be brighter than normal.';
     else               exposureStatus = '🔴 Heavily overexposed — highlights will be blown out.';
 
-    this.infoEl.innerHTML = `
-      <p><strong>Aperture:</strong> ${this.fStops[aperture]} &nbsp;|&nbsp;
-         <strong>Shutter:</strong> ${this.speeds[shutter]} &nbsp;|&nbsp;
-         <strong>ISO:</strong> ${this.isoVals[iso]}</p>
-      <p style="margin-top:6px">${exposureStatus}</p>
-    `;
+    if (this.infoEl) {
+        this.infoEl.innerHTML = `
+          <p><strong>Aperture:</strong> ${this.fStops[aperture]} &nbsp;|&nbsp;
+             <strong>Shutter:</strong> ${this.speeds[shutter]} &nbsp;|&nbsp;
+             <strong>ISO:</strong> ${this.isoVals[iso]}</p>
+          <p style="margin-top:6px">${exposureStatus}</p>
+        `;
+    }
   }
 }

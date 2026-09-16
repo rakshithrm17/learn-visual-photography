@@ -131,8 +131,22 @@
 
             <!-- Simulator canvas -->
             <div class="simulator">
-              <div class="simulator-canvas-area" style="height:260px;position:relative;">
-                <canvas id="capture-canvas" width="480" height="260" style="width:100%;height:100%;"></canvas>
+              <div class="simulator-canvas-area sim-container" id="capture-sim" style="height:260px;">
+                <div class="sim-layer sim-bg" id="cap-image" style="background-image: url('../assets/images/sim_portrait.jpg');"></div>
+                <div class="sim-layer sim-bg-blur" id="cap-blur-layer" style="background-image: url('../assets/images/sim_portrait.jpg');"></div>
+                
+                <div class="sim-pinwheel-container" id="cap-pinwheel-container" style="display:none;">
+                  <svg viewBox="0 0 100 100" class="sim-pinwheel" id="cap-pinwheel">
+                    <path d="M50 50 L50 10 A40 40 0 0 1 90 50 Z" fill="#ef4444"/>
+                    <path d="M50 50 L90 50 A40 40 0 0 1 50 90 Z" fill="#3b82f6"/>
+                    <path d="M50 50 L50 90 A40 40 0 0 1 10 50 Z" fill="#eab308"/>
+                    <path d="M50 50 L10 50 A40 40 0 0 1 50 10 Z" fill="#22c55e"/>
+                    <circle cx="50" cy="50" r="6" fill="#ffffff" />
+                  </svg>
+                </div>
+
+                <div class="sim-layer sim-noise" id="cap-noise"></div>
+                <div class="sim-layer sim-brightness" id="cap-brightness" style="background-color: black; opacity: 0;"></div>
 
                 <!-- White flash overlay for shutter press effect -->
                 <div id="shutter-flash" style="
@@ -242,7 +256,7 @@
   <script src="../js/data/cameras.js"></script>
   <script src="../js/data/lenses.js"></script>
   <script src="../js/data/camera-buttons.js"></script>
-  <script src="../js/simulators/scene-renderer.js"></script>
+  <script src="../js/simulators/exposure-simulator.js"></script>
   <script src="../js/simulators/exposure-simulator.js"></script>
   <script src="../js/explorer/camera-explorer.js"></script>
   <script src="../js/main.js"></script>

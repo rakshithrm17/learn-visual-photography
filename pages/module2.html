@@ -98,8 +98,9 @@
       <div class="simulator reveal">
 
         <!-- Canvas area -->
-        <div class="simulator-canvas-area" style="height:320px;">
-          <canvas id="aperture-canvas" width="640" height="320" style="width:100%;height:100%;"></canvas>
+        <div class="simulator-canvas-area sim-container" style="height:320px;">
+          <div class="sim-layer sim-bg" style="background-image: url('../assets/images/sim_portrait.jpg');"></div>
+          <div class="sim-layer sim-bg-blur" id="aperture-blur-layer" style="background-image: url('../assets/images/sim_portrait.jpg');"></div>
         </div>
 
         <!-- Controls -->
@@ -172,8 +173,16 @@
       </div>
 
       <div class="simulator reveal">
-        <div class="simulator-canvas-area" style="height:320px;">
-          <canvas id="shutter-canvas" width="640" height="320" style="width:100%;height:100%;"></canvas>
+        <div class="simulator-canvas-area sim-container" style="height:320px; background-color: #e0f2fe;">
+          <div class="sim-pinwheel-container" id="shutter-pinwheel-container">
+            <svg viewBox="0 0 100 100" class="sim-pinwheel" id="shutter-pinwheel">
+              <path d="M50 50 L50 10 A40 40 0 0 1 90 50 Z" fill="#ef4444"/>
+              <path d="M50 50 L90 50 A40 40 0 0 1 50 90 Z" fill="#3b82f6"/>
+              <path d="M50 50 L50 90 A40 40 0 0 1 10 50 Z" fill="#eab308"/>
+              <path d="M50 50 L10 50 A40 40 0 0 1 50 10 Z" fill="#22c55e"/>
+              <circle cx="50" cy="50" r="6" fill="#ffffff" />
+            </svg>
+          </div>
         </div>
 
         <div class="simulator-controls">
@@ -241,8 +250,10 @@
       </div>
 
       <div class="simulator reveal">
-        <div class="simulator-canvas-area" style="height:320px;">
-          <canvas id="iso-canvas" width="640" height="320" style="width:100%;height:100%;"></canvas>
+        <div class="simulator-canvas-area sim-container" style="height:320px;">
+          <div class="sim-layer sim-bg" id="iso-image" style="background-image: url('../assets/images/sim_lowlight.jpg');"></div>
+          <div class="sim-layer sim-noise" id="iso-noise"></div>
+          <div class="sim-layer sim-brightness" id="iso-brightness" style="background-color: white; opacity: 0;"></div>
         </div>
 
         <div class="simulator-controls">
@@ -295,8 +306,11 @@
 
         <!-- Left: Combined simulator canvas -->
         <div class="simulator">
-          <div class="simulator-canvas-area" style="height:280px;">
-            <canvas id="exposure-canvas" width="480" height="280" style="width:100%;height:100%;"></canvas>
+          <div class="simulator-canvas-area sim-container" style="height:280px;">
+            <div class="sim-layer sim-bg" id="exp-image" style="background-image: url('../assets/images/sim_portrait.jpg');"></div>
+            <div class="sim-layer sim-bg-blur" id="exp-blur-layer" style="background-image: url('../assets/images/sim_portrait.jpg');"></div>
+            <div class="sim-layer sim-noise" id="exp-noise"></div>
+            <div class="sim-layer sim-brightness" id="exp-brightness" style="background-color: black; opacity: 0;"></div>
           </div>
 
           <!-- Exposure meter -->
@@ -409,7 +423,7 @@
 
   <!-- ===== SCRIPTS ===== -->
   <script src="../js/main.js"></script>
-  <script src="../js/simulators/scene-renderer.js"></script>
+  <script src="../js/simulators/exposure-simulator.js"></script>
   <script src="../js/simulators/exposure-simulator.js"></script>
   <script>
     // ---- Initialize all three simulators on page load ----
